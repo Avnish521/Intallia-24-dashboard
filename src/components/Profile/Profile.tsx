@@ -1,5 +1,5 @@
 import React from "react";
-import { MainLayout } from "@/components/layout/MainLayout";
+import { MainLayout } from "@/layout/MainLayout";
 import { useState } from "react";
 import { Table } from "@/components/ui/table";
 import PTable from "./PTable";

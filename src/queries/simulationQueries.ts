@@ -1,10 +1,26 @@
-import { SimulationGrid } from '@/pages/Simulation/SimulationGrid/SimulationGrid';
-import { Simulation } from '@/types';
-import { getScreen, addSection, addJobSimulation, getJobSimulationById } from "@/http/api.js";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { SimulationGrid } from "@/pages/Simulation/SimulationGrid/SimulationGrid";
+import { Simulation } from "@/types";
+import {
+  getScreen,
+  addSection,
+  addJobSimulation,
+  getJobSimulationById,
+  deleteSoftware,
+} from "@/http/api.js";
+import {
+  useMutation,
+  useQuery,
+  UseMutationResult,
+  UseQueryResult,
+  useQueryClient,
+} from "@tanstack/react-query";
 import { toast } from "sonner";
+import { useNavigate } from "react-router-dom";
 
-export function useJobSimulation() {
+// You may want to define proper types for your API responses
+type ApiResponse = any;
+
+export function useJobSimulation(): UseQueryResult<ApiResponse, unknown> {
   return useQuery({
     queryKey: ["JobSimulations"],
     queryFn: () =>
@@ -21,7 +37,11 @@ export function useJobSimulation() {
   });
 }
 
-export function useAddJobSimulation() {
+export function useAddJobSimulation(): UseMutationResult<
+  ApiResponse,
+  unknown,
+  { JSON: string }
+> {
   return useMutation({
     mutationFn: async (payload: { JSON: string }) => {
       return await addJobSimulation(payload);
@@ -38,46 +58,48 @@ export function useAddJobSimulation() {
 }
 
 // get Simulation data by SimulationId
-export function useSimulationData(SimulationId: string, CompanyId: string) {
+export function useSimulationData(
+  SimulationId: string,
+  SoftwareId: string,
+): UseQueryResult<ApiResponse, unknown> {
   return useQuery({
     queryKey: ["JobSimulations", SimulationId],
     queryFn: () =>
       getJobSimulationById({
         JSON: JSON.stringify({
-          Header: [{ SimulationId, CompanyId }],
+          Header: [{ SimulationId, SoftwareId }],
           Response: [{ ResponseText: "", ErrorCode: "" }],
         }),
       }),
-    enabled: !!(SimulationId && CompanyId),
+    enabled: !!(SimulationId && SoftwareId),
     retry: 2,
   });
 }
 
-
-
-//Section Queries
-export function useAddSection() {
+// Section Queries
+export function useAddSection(): UseMutationResult<
+  ApiResponse,
+  unknown,
+  { JSON: string }
+> {
   return useMutation({
     mutationFn: async (payload: { JSON: string }) => {
       const result = await addSection(payload);
-        return result;
+      return result;
     },
     onSuccess: (data) => {
-      // Handle success (e.g., show toast)
       console.log("Section added successfully:", data);
       toast.success("Section added successfully");
     },
     onError: (error: unknown) => {
-      // Handle error globally (e.g., show toast)
       console.error("Add section failed:", error);
-      toast.error("Add section failed")
+      toast.error("Add section failed");
     },
   });
 }
 
-
-//Software Queries
-export function useSoftware() {
+// Software Queries
+export function useSoftware(): UseQueryResult<ApiResponse, unknown> {
   return useQuery({
     queryKey: ["Software"],
     queryFn: () =>
@@ -91,5 +113,31 @@ export function useSoftware() {
         Filter5: "",
       }),
     retry: 2,
+  });
+}
+
+export function useDeleteSoftware() {
+  const queryClient = useQueryClient();
+  const navigate = useNavigate();
+
+  return useMutation({
+    mutationFn: async (SoftwareId: string | number) => {
+      const payload = {
+        JSON: JSON.stringify({
+          Header: [{ SoftwareId: SoftwareId }],
+          Response: [{ ResponseText: "", ErrorCode: "" }],
+        }),
+      };
+      return deleteSoftware(payload);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["companies"] });
+      navigate("/software");
+      toast.success("Software deleted successfully.");
+    },
+    onError: (error: unknown) => {
+      console.error("Delete failed:", error);
+      toast.error("Failed to delete software.");
+    },
   });
 }

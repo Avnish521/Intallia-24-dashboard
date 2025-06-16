@@ -1,9 +1,9 @@
 import { getScreen, deleteCompany } from "@/http/api.js";
-import { useMutation, useQuery, QueryClient, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, QueryClient, useQueryClient, UseQueryResult } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 
-export function useCompanies() {
+export function useCompanies(): UseQueryResult<any, unknown> {
   return useQuery({
     queryKey: ["companies"],
     queryFn: () =>

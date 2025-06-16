@@ -2,15 +2,8 @@
 import { create } from "zustand";
 import { login, logout } from "@/http/api";
 import { toast } from "sonner";
+import { LoginResponse, ValidUser } from "@/types";
 
-
-type User = {
-  UserId: string;
-  UserGroupId: string;
-  CompanyId: string;
-  IsValid: string;
-  Token: string;
-};
 
 type State = {
   token: string | null;
@@ -39,7 +32,7 @@ const clearAuthStorage = () => {
   storageKeys.forEach((key) => localStorage.removeItem(key));
 };
 
-const setAuthStorage = (user: User) => {
+const setAuthStorage = (user: ValidUser) => {
   localStorage.setItem("token", user.Token);
   localStorage.setItem("userID", user.UserId);
   localStorage.setItem("userGroupId", user.UserGroupId);
@@ -59,9 +52,13 @@ export const useAuthStore = create<State & Actions>((set) => ({
     try {
       const payload = { LoginId: userid, Password: password, isValid: "" };
       const res = await login(payload);
-      const user: User = res.UserValid?.[0];
+      const data: LoginResponse = res.data;
+      const user: ValidUser | undefined =
+      Array.isArray(data.UserValid) && data.UserValid.length > 0
+        ? data.UserValid[0]
+          : undefined;
 
-      if (user && user.IsValid === "true") {
+      if (user) {
         setAuthStorage(user);
         set({
           token: user.Token,

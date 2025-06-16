@@ -1,6 +1,6 @@
 import React from 'react'
 import Image5 from '@/assets/Ellipse 3.svg';
-import { MainLayout } from "@/components/layout/MainLayout";
+import { MainLayout } from "@/layout/MainLayout.js";
 import { PackageX } from 'lucide-react';
 import { SkillCard } from '../SkillCard.js';
 import ViewSkillAttemptTable from './ViewSkillAttemptTable.jsx'

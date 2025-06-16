@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { MainLayout } from "@/components/layout/MainLayout";
+import { MainLayout } from "@/layout/MainLayout";
 import { useForm, Controller } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";

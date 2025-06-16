@@ -5,6 +5,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { EducationSection } from "./EducationSection";
 import { ExperienceSection } from "./ExperienceSection";
 import { useUserById } from "@/queries/userQueries";
+import { FormRef } from "@/types";
 
 // 1. Define Zod schema
 const userSchema = z.object({
@@ -34,17 +35,11 @@ interface UserFormProps {
   userId?: string;
 }
 
-export interface UserFormRef {
-  submit: () => void;
-}
-
-export const UserForm = forwardRef<UserFormRef, UserFormProps>((props, ref) => {
-  const { userId } = props;
-  const { data, isFetched } = useUserById(userId);
-  const userData = data?.Header[0];
+export const UserForm = forwardRef<FormRef, UserFormProps>(({ userId }, ref) => {
+  const { data: users, isFetched } = useUserById(userId);
+  const userData = users?.Header[0];
 
 
-  // 2. Setup react-hook-form with zod
   const {
     register,
     handleSubmit,
@@ -64,19 +59,29 @@ export const UserForm = forwardRef<UserFormRef, UserFormProps>((props, ref) => {
     },
   });
 
+  // Expose submit method with mode to parent
   useImperativeHandle(ref, () => ({
-    submit: () => handleSubmit(onSubmit)(),
+    submit: (mode) => handleSubmit((formData) => onSubmit(formData, mode))(),
   }));
 
-  const onSubmit = (data: UserFormValues) => {    //code//
-    console.log(data);
+  //Add New User
+  const addNewUser = (formData: UserFormValues, mode: "save" | "saveAndExit") => { }
+
+  // Update New User
+  const handleUpdateUser = (formData: UserFormValues, mode: "save" | "saveAndExit") => { }
+
+  // Unified submit handler
+  const onSubmit = async (formData: UserFormValues, mode: "save" | "saveAndExit" = "save") => {
+    if (userId) {
+      await handleUpdateUser(formData, mode);
+    } else {
+      await addNewUser(formData, mode);
+    }
   };
 
   useEffect(() => {
     if (userData) {
-      console.log("User data fetched:", userData);
       const values = mapuserDataToForm(userData);
-      console.log("Setting form values:", values);
       Object.entries(values).forEach(([key, value]) =>
         setValue(key as keyof UserFormValues, value),
       );
@@ -85,9 +90,7 @@ export const UserForm = forwardRef<UserFormRef, UserFormProps>((props, ref) => {
 
   return (
     <form
-      className="flex font-plusJakarta flex-col gap-5 overflow-y-auto"
-      onSubmit={handleSubmit(onSubmit)}
-    >
+      className="flex font-plusJakarta flex-col gap-5 overflow-y-auto" noValidate >
       <div className="w-full">
         <section>
           <h2 className="text-xl font-medium tracking-[0.38px] bg-clip-text bg-[linear-gradient(90deg,#0DAFDC_0%,#22E9A2_100%)] text-transparent ">

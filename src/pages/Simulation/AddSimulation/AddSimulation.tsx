@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { MainLayout } from "@/components/layout/MainLayout";
+import { MainLayout } from "@/layout/MainLayout";
 import { ContentSection } from "@/pages/Simulation/AddSimulation/ContentSection";
 import { SimulationDetails } from "@/pages/Simulation/AddSimulation/SimulationDetails";
 import { SimulationForm } from "@/pages/Simulation/AddSimulation/SimulationForm";

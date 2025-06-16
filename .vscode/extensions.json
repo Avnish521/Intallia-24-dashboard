@@ -5,9 +5,12 @@
     "esbenp.prettier-vscode", // Code formatter
 
     // 🧠 IntelliSense & Snippets
-    "visualstudioexptteam.vscodeintellicode", // AI-assisted completions
     "dsznajder.vscode-es7-javascript-react-snippets", // React/Redux snippets
     "xabikos.javascriptsnippets", // JavaScript snippets
+    "christian-kohler.path-intellisense", // Path autocompletion
+    "christian-kohler.npm-intellisense", // NPM package autocompletion
+    "ms-vscode.vscode-typescript-tslint-plugin", // TypeScript linting
+
 
     // 🛠️ Development Enhancements
     "formulahendry.auto-rename-tag", // Auto rename paired tags
@@ -17,34 +20,19 @@
     "aaron-bond.better-comments", // Improved comment highlighting
     "editorconfig.editorconfig", // Editor config support
 
+
     // 📦 Styling and Tailwind
     "bradlc.vscode-tailwindcss", // Tailwind CSS IntelliSense
     "ecmel.vscode-html-css", // CSS support inside HTML
-    "csstools.postcss", // PostCSS syntax support
-    "stylelint.vscode-stylelint", // Stylelint integration
+
 
     // ⚙️ Environment & Config
     "mikestead.dotenv", // .env syntax highlighting
 
-    // 🔬 Testing & Coverage
-    "orta.vscode-jest", // Jest test runner support
-    "kavod-io.vscode-jest-test-adapter", // Jest test explorer
-
-    // 🧪 React Testing Library
-    "firsttris.vscode-jest-runner", // Run specific test files/lines
-    "rangav.vscode-thunder-client", // API testing (Postman alternative)
 
     // 🔗 Git & GitHub
     "eamodio.gitlens", // Git insights
     "github.vscode-pull-request-github", // GitHub PRs & issues
-
-    // 🌐 Browser Sync & Live Server
-    "ritwickdey.liveserver", // Live server preview
-    "oderwat.indent-rainbow", // Indentation visualization
-    // React Query tools
-    "rangav.vscode-thunder-client",
-    "humao.rest-client",
-    "apollographql.vscode-apollo",
 
     // AI Code Review
     "github.copilot",

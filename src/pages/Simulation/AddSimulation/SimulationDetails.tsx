@@ -26,15 +26,15 @@ export const SimulationDetails = () => {
     window.dispatchEvent(event);
   }, [taskCounts]);
 
-    const softwareOptions = useMemo(() => {
-      if (isSuccess && Software?.LookupData) {
-        return Software.LookupData.map((item) => ({
-          value: item.SoftwareId,
-          label: item.Name,
-        }));
-      }
-      return [];
-    }, [isSuccess, Software]);
+  const softwareOptions = useMemo(() => {
+    if (isSuccess && Array.isArray(Software?.LookupData)) {
+      return Software.LookupData.map((item) => ({
+        value: item.SoftwareId,
+        label: item.Name,
+      }));
+    }
+    return [];
+  }, [isSuccess, Software]);
 
   const handleCreateSection = () => {
     if (!selectedSoftware) {

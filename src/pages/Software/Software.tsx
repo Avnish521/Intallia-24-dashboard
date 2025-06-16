@@ -1,36 +1,35 @@
 import { ActionButton } from "@/components/common/ActionButton";
 import Pagination from "@/components/common/Pagination";
-import { MainLayout } from "@/components/layout/MainLayout";
-import { CTable } from "@/pages/Company/CTable";
+import { MainLayout } from "@/layout/MainLayout";
+import { STable } from "@/pages/Software/STable";
 import { UserTableActions } from "@/components/users/UserTableActions";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Company } from "@/types";
-import { jsPDF } from "jspdf";
-import { autoTable } from "jspdf-autotable";
-import * as XLSX from "xlsx";
-import { useCompanies } from "@/queries/companyQueries";
+import { Software as SoftwareType } from "@/types";
+import { useSoftware } from "@/queries/simulationQueries";
+import { exportToExcel, exportToPDF } from "@/utils";
 
 const Software = () => {
   const navigate = useNavigate();
   const [currentPage, setCurrentPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState("");
 
-  // Fetch companies
+  // Fetch softwares
   const {
-    data: companies,
+    data: softwares,
     isLoading,
     isError,
-  } = useCompanies();
+  } = useSoftware();
 
-  // Filter companies by search query
-  const filteredCompanies = companies?.LookupData?.filter((company: Company) => {
+  // Filter softwares by search query
+  const filteredCompanies = softwares?.LookupData?.filter((software: SoftwareType) => {
     const searchStr = searchQuery.toLowerCase();
     return (
-      company.CompanyId?.toLowerCase().includes(searchStr) ||
-      company.CompanyName?.toLowerCase().includes(searchStr) ||
-      company.Email?.toLowerCase().includes(searchStr) ||
-      company.PhoneNumber?.toLowerCase().includes(searchStr)
+      software.SoftwareId?.toLowerCase().includes(searchStr) ||
+      software.Name?.toLowerCase().includes(searchStr) ||
+      software.Description?.toLowerCase().includes(searchStr) ||
+      software.TableName?.toLowerCase().includes(searchStr) ||
+      software.CreateBy?.toLowerCase().includes(searchStr)
     );
   }) || [];
 
@@ -39,62 +38,25 @@ const Software = () => {
   const startIndex = (currentPage - 1) * rowPerPage;
   const endIndex = startIndex + rowPerPage;
 
-  const displayedCompanies: Company[] = filteredCompanies.slice(startIndex, endIndex);
+  const displayedCompanies: SoftwareType[] = filteredCompanies.slice(startIndex, endIndex);
 
-  const exportInExcel = () => {
-    const headers = [
-      "CompanyId",
-      "CompanyName",
-      "Email",
-      "Phone Number",
-      "Status",
-      "Website",
-    ];
+  const headers = [
+    "SoftwareId",
+    "Name",
+    "Description",
+    "TableName",
+    "CreateBy",
+    "CreateDate",
+  ]
 
-    const data = filteredCompanies.map((company: Company) => ({
-      CompanyId: company.CompanyId ?? "",
-      CompanyName: company.CompanyName ?? "",
-      Email: company.Email ?? "",
-      "Phone Number": company.PhoneNumber ?? "",
-      Status: company.Status ?? "",
-      Website: company.Website ?? "",
-    }));
-
-    const worksheet = XLSX.utils.json_to_sheet(data, { header: headers });
-    const workbook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(workbook, worksheet, "Companies");
-    XLSX.writeFile(workbook, "companies.xlsx");
-  };
-
-  const handleDownloadPDF = () => {
-    const doc = new jsPDF();
-    const headers = [
-      "CompanyId",
-      "CompanyName",
-      "Email",
-      "Phone Number",
-      "Status",
-      "Website",
-    ];
-
-    const body = filteredCompanies.map((company: Company) => [
-      company.CompanyId ?? "",
-      company.CompanyName ?? "",
-      company.Email ?? "",
-      company.PhoneNumber ?? "",
-      company.Status ?? "",
-      company.Website ?? "",
-    ]);
-
-    autoTable(doc, {
-      head: [headers],
-      body,
-      styles: { fontSize: 10 },
-      headStyles: { fillColor: [13, 175, 220] },
-    });
-
-    doc.save("companies.pdf");
-  };
+  const body = filteredCompanies.map((software: SoftwareType) => ({
+    SoftwareId: software.SoftwareId ?? "",
+    Name: software.Name ?? "",
+    Description: software.Description ?? "",
+    TableName: software.TableName ?? "",
+    CreateBy: software.CreateBy ?? "",
+    CreateDate: software.CreateDate ?? "",
+  }));
 
   return (
     <MainLayout>
@@ -102,21 +64,23 @@ const Software = () => {
         <main className="flex-1">
           <div className="space-y-6">
             <div className="flex justify-between items-center">
-              <h1 className="page-heading">User Management (Company)</h1>
+              <h1 className="page-heading">Software</h1>
             </div>
             <UserTableActions
               onSearch={setSearchQuery}
-              exportInExcel={exportInExcel}
-              handleDownload={handleDownloadPDF}
+              exportInExcel={() => exportToExcel(headers, body, "SoftwareList")}
+              handleDownload={() => exportToPDF(headers, body, "SoftwareList")}
+              buttonLabel="Add New Software"
+              buttonLink={() => navigate("/software/add-new-software")}
             />
             <div className="bg-white p-6 rounded-lg">
               {isLoading && <div>Loading...</div>}
-              {isError && <div>Error loading companies.</div>}
+              {isError && <div>Error loading softwares.</div>}
               {!isLoading && !isError && (
                 <>
-                  <CTable
+                  <STable
                     searchQuery={searchQuery}
-                    companies={displayedCompanies}
+                    softwares={displayedCompanies}
                   />
                   <Pagination
                     currentPage={currentPage}

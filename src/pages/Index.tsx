@@ -2,7 +2,7 @@ import { CategorySales } from "@/components/dashboard/CategorySales";
 import { SalesChart } from "@/components/dashboard/SalesChart";
 import { StatsCard } from "@/components/dashboard/StatsCard";
 import { TransactionsTable } from "@/components/dashboard/TransactionsTable";
-import { MainLayout } from "@/components/layout/MainLayout";
+import { MainLayout } from "@/layout/MainLayout";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import {

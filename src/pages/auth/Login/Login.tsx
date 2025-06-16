@@ -1,11 +1,11 @@
 import myImage from '@/assets/Frame 25.svg';
 import SignupImg from "@/assets/Hired-bro 1.svg";
 import { useState } from 'react';
-import { useToast } from "@/components/ui/use-toast"
 import LoginForm from './LoginForm';
+import { useNavigate } from 'react-router-dom';
 
 const Login = () => {
-  const [isShowV, setIsShowV] = useState(false);
+  const navigator = useNavigate();
 
   return (
     <div className="h-screen">
@@ -15,10 +15,10 @@ const Login = () => {
             <img src={myImage} alt="Example" />
           </div>
           <div className="flex gap-2 items-center">
-            <button className="rounded-lg bg-[#242426] py-2 px-3 text-[#FFFFFF] leading-[21px]">
+            <button className="rounded-lg bg-[#242426] py-2 px-3 text-[#FFFFFF] leading-[21px]" onClick={() => navigator('/login')}>
               Login
             </button>
-            <button className="ring-1 rounded-lg py-1 px-3 ring-[#242426]">
+            <button className="ring-1 rounded-lg py-1 px-3 ring-[#242426]" onClick={() => navigator('/signup')}>
               Singup
             </button>
           </div>
@@ -31,7 +31,7 @@ const Login = () => {
             Explore. Practice. Get Hired!
           </h2>
         </div>
-        {!isShowV && <LoginForm />}
+      <LoginForm />
       </div>
     </div>
   );

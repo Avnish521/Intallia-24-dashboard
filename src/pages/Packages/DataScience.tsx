@@ -1,6 +1,6 @@
 import React from "react";
 import SidebarActions from "@/components/users/SidebarActions";
-import { MainLayout } from "@/components/layout/MainLayout";
+import { MainLayout } from "@/layout/MainLayout";
 
 const DataScience: React.FC = () => {
   const handleAddNewPackage = () => {

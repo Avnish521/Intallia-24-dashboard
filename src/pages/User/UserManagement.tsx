@@ -1,28 +1,30 @@
-import { ActionButton } from "@/components/common/ActionButton";
-import Pagination from "@/components/common/Pagination";
-import { MainLayout } from "@/components/layout/MainLayout";
-import { UserTable } from "@/components/users/UserTable";
-import { UserTableActions } from "@/components/users/UserTableActions";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { MainLayout } from "@/layout/MainLayout";
+import { UserTable } from "@/components/users/UserTable";
+import { UserTableActions } from "@/components/users/UserTableActions";
+import Pagination from "@/components/common/Pagination";
 import { exportToExcel, exportToPDF } from "@/utils";
 import { useUser } from "@/queries/userQueries";
 
+const USERS_PER_PAGE = 8;
+const EXPORT_COLUMNS = ["UserId", "UserGroupId", "Email", "Phone"] as const;
+
 const UserManagement = () => {
   const navigate = useNavigate();
-  const { data: users = [] } = useUser();
+  const { data: usersResponse } = useUser();
 
-  const [currentPage, setCurrentPage] = useState(1);
-  const [searchQuery, setSearchQuery] = useState("");
-  const usersPerPage = 8;
-  const totalPages = Math.ceil(users?.LookupData?.length / usersPerPage); // Ensure correct pagination
+  const lookupData = usersResponse?.LookupData ?? [];
 
-  const startIndex = (currentPage - 1) * usersPerPage;
-  const endIndex = Math.min(startIndex + usersPerPage);
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [searchQuery, setSearchQuery] = useState<string>("");
 
-  //Export and Download User Data
-  const columns = ["UserId", "UserGroupId", "Email", "Phone"];
-  const body = users?.LookupData?.map((user) => ({
+  const totalPages = Math.ceil(lookupData.length / USERS_PER_PAGE);
+
+  const startIndex = (currentPage - 1) * USERS_PER_PAGE;
+  const endIndex = Math.min(startIndex + USERS_PER_PAGE, lookupData.length);
+
+  const exportBody = lookupData.map((user) => ({
     UserId: user.UserId ?? "",
     UserGroupId: user.UserGroupId ?? "",
     Email: user.Email ?? "",
@@ -40,8 +42,8 @@ const UserManagement = () => {
 
             <UserTableActions
               onSearch={setSearchQuery}
-              handleDownload={() => exportToPDF(columns, body, "UserList")}
-              exportInExcel={() => exportToExcel(columns, body, "UserList")}
+              handleDownload={() => exportToPDF(EXPORT_COLUMNS, exportBody, "UserList")}
+              exportInExcel={() => exportToExcel(EXPORT_COLUMNS, exportBody, "UserList")}
               buttonLink={() => navigate("/user/add-new-user")}
               buttonLabel="Add New User"
             />
@@ -51,7 +53,7 @@ const UserManagement = () => {
                 startIndex={startIndex}
                 endIndex={endIndex}
                 searchQuery={searchQuery}
-                users={users?.LookupData}
+                users={lookupData}
               />
 
               <Pagination

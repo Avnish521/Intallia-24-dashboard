@@ -24,7 +24,7 @@ import { AddNewPackage } from "@/pages/Packages/AddNewPackage";
 import { ViewPackage } from "@/pages/Packages/ViewPackage";
 import DataScience from "@/pages/Packages/DataScience";
 
-import Plans from "@/pages/Packages/plans";
+import Plans from "@/pages/Packages/Plans";
 
 import { Invitations } from "@/components/Invitations/Invitations";
 import Payments from "@/pages/Payments/Payments";
@@ -42,6 +42,10 @@ import CaseStudyDetail from "@/components/user dashboard/CaseStudyDetail";
 import UserPreferences from "@/pages/UserPreferences/UserPreferences";
 import InnerPage from "@/pages/InnerPage/InnerPage";
 import AddRole from "@/pages/RolesAndAccess/AddRole";
+
+//Software
+import Software from "@/pages/Software/Software";
+import AddNewSoftware from "@/pages/Software/AddNewSoftware/AddNewSoftware";
 
 // Route definitions
 const router = createBrowserRouter([
@@ -177,6 +181,40 @@ const router = createBrowserRouter([
         element: (
           <PrivateRoute>
             <AddSimulation />
+          </PrivateRoute>
+        ),
+      },
+    ],
+  },
+  {
+    path: "/software",
+    element: (
+      <PrivateRoute>
+        <Outlet />
+      </PrivateRoute>
+    ),
+    children: [
+      {
+        index: true,
+        element: (
+          <PrivateRoute>
+            <Software />
+          </PrivateRoute>
+        ),
+      },
+      {
+        path: "new-software",
+        element: (
+          <PrivateRoute>
+            <AddNewSoftware />
+          </PrivateRoute>
+        ),
+      },
+      {
+        path: ":softwareId",
+        element: (
+          <PrivateRoute>
+            <AddNewSoftware />
           </PrivateRoute>
         ),
       },

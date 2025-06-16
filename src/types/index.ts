@@ -1,3 +1,37 @@
+import { string } from "zod";
+
+export type ValidUser = {
+  UserId: string;
+  UserGroupId: string;
+  CompanyId: string;
+  IsValid: string;
+  Token: string;
+};
+
+export type LoginPayload = {
+  LoginId: string;
+  Password: string;
+  isValid: string;
+};
+
+// Login response type
+export type LoginResponse = {
+  UserValid: ValidUser[];
+  [key: string]: unknown;
+};
+
+export interface LookupUser {
+  UserId: string;
+  UserGroupId: string;
+  Email: string;
+  Phone: string;
+  // Add other fields as needed
+}
+
+export type LookupResponse = {
+  LookupData: LookupUser[];
+  [key: string]: unknown;
+};
 
 export interface Roles {
   UserGroupId: string;
@@ -5,12 +39,16 @@ export interface Roles {
   Description: string;
 }
 
-
 export interface User {
   UserId: string;
+  FirstName: string;
+  LastName: string;
   Email: string;
-  UserGroupId: string;
-  CompanyId: string;
+  ContactNumber: string;
+  LinkedInURL: string;
+  ProfessionalSummary: string;
+  ResumeUpload: string;
+  Address: string;
 }
 
 export interface Payment {
@@ -61,6 +99,10 @@ export interface Company {
   ModifyDate: Date;
 }
 
+export type FormRef = {
+  submit: (mode?: "save" | "saveAndExit") => void;
+};
+
 export interface Plan {
   PlanID: string;
   UserID: string;
@@ -80,7 +122,7 @@ export interface UserEduction {
   CreateBy: string;
   CreateDate: Date;
   ModifyBy: null;
-  ModifyDate:Date;
+  ModifyDate: Date;
 }
 
 export interface Simulation {
@@ -131,4 +173,13 @@ export interface SoftwareSection {
 
 export interface TaskCounts {
   [key: string]: number;
+}
+
+export interface Software {
+  SoftwareId: string;
+  Name: string;
+  Description: string;
+  TableName: string;
+  CreateBy: string;
+  CreateDate: Date;
 }

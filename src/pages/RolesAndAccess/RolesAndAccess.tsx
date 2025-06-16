@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Pagination from "@/components/common/Pagination";
-import { MainLayout } from "@/components/layout/MainLayout";
+import { MainLayout } from "@/layout/MainLayout";
 import { UserTableActions } from "@/components/users/UserTableActions";
 import RolesAndAccessTable from "./RolesAndAccessTable";
 import { autoTable } from "jspdf-autotable";

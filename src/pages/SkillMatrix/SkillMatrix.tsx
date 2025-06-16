@@ -1,6 +1,6 @@
 
 import React, { useState, useMemo } from "react";
-import { MainLayout } from "@/components/layout/MainLayout";
+import { MainLayout } from "@/layout/MainLayout";
 import { SkillCard } from "@/pages/SkillMatrix/SkillCard";
 import { SearchBar } from "@/pages/SkillMatrix/SearchBar";
 import { FilterButton } from "@/pages/SkillMatrix/FilterButton";

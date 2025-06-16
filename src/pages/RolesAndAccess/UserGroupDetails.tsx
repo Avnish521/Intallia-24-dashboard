@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from "react";
-import { MainLayout } from "@/components/layout/MainLayout";
+import { MainLayout } from "@/layout/MainLayout";
 import { useParams, useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { getScreen, getRoleById } from "@/http/api";

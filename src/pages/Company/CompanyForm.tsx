@@ -5,7 +5,8 @@ import { addCompany, getCompanyById, updateCompany } from "@/http/api.js";
 import { useNavigate } from "react-router-dom";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
-import companySchema, {CompanySchemaType as CompanyFormValues} from "@/schema/companySchema";
+import companySchema, { CompanySchemaType as CompanyFormValues } from "@/schema/companySchema";
+import { FormRef } from "@/types";
 
 const defaultValues: CompanyFormValues = {
   companyId: "",
@@ -21,18 +22,6 @@ const defaultValues: CompanyFormValues = {
   status: "",
   numberOfUsers: "",
   numberOfSimulations: "",
-};
-
-const updateCompanyPayload = (companyId: string | number) => {
-  if (!companyId) {
-    throw new Error("Invalid companyId provided to updateCompanyPayload");
-  }
-  return {
-    JSON: JSON.stringify({
-      Header: [{ CompanyId: companyId }],
-      Response: [{ ResponseText: "", ErrorCode: "" }],
-    }),
-  };
 };
 
 const mapCompanyDataToForm = (data): CompanyFormValues => ({
@@ -51,15 +40,12 @@ const mapCompanyDataToForm = (data): CompanyFormValues => ({
   numberOfSimulations: data?.NumberOfSimulations || "",
 });
 
+
 interface CompanyFormProps {
   companyId?: string;
 }
 
-export interface CompanyFormRef {
-  submit: () => void;
-}
-
-const CompanyForm = forwardRef<CompanyFormRef, CompanyFormProps>(
+const CompanyForm = forwardRef<FormRef, CompanyFormProps>(
   ({ companyId }, ref) => {
     const navigate = useNavigate();
     const queryClient = useQueryClient();
@@ -74,12 +60,13 @@ const CompanyForm = forwardRef<CompanyFormRef, CompanyFormProps>(
       defaultValues,
     });
 
+    // Expose submit method with mode to parent
     useImperativeHandle(ref, () => ({
-      submit: () => handleSubmit(onSubmit)(),
+      submit: (mode) => handleSubmit((formData) => onSubmit(formData, mode))(),
     }));
 
     // Add new Company
-    const addNewCompany = async (formData: CompanyFormValues) => {
+    const addNewCompany = async (formData: CompanyFormValues, mode: "save" | "saveAndExit") => {
       try {
         const payload = {
           JSON: JSON.stringify({
@@ -104,7 +91,9 @@ const CompanyForm = forwardRef<CompanyFormRef, CompanyFormProps>(
         await addCompany(payload);
         await queryClient.invalidateQueries({ queryKey: ["companies"] });
         toast.success("Company added successfully!");
-        navigate("/company");
+        if (mode === "saveAndExit") {
+          navigate("/company");
+        }
       } catch (error) {
         toast.error("Failed to add company");
         console.error(error);
@@ -112,7 +101,7 @@ const CompanyForm = forwardRef<CompanyFormRef, CompanyFormProps>(
     };
 
     // Update Company
-    const handleUpdateCompany = async (formData: CompanyFormValues) => {
+    const handleUpdateCompany = async (formData: CompanyFormValues, mode: "save" | "saveAndExit") => {
       try {
         const payload = {
           JSON: JSON.stringify({
@@ -137,18 +126,21 @@ const CompanyForm = forwardRef<CompanyFormRef, CompanyFormProps>(
         await updateCompany(payload);
         await queryClient.invalidateQueries({ queryKey: ["companies"] });
         toast.success("Company updated successfully!");
-        navigate("/company");
+        if (mode === "saveAndExit") {
+          navigate("/company");
+        }
       } catch (error) {
         toast.error("Failed to update company");
         console.error(error);
       }
     };
 
-    const onSubmit = async (formData: CompanyFormValues) => {
+    // Unified submit handler
+    const onSubmit = async (formData: CompanyFormValues, mode: "save" | "saveAndExit" = "save") => {
       if (companyId) {
-        await handleUpdateCompany(formData);
+        await handleUpdateCompany(formData, mode);
       } else {
-        await addNewCompany(formData);
+        await addNewCompany(formData, mode);
       }
     };
 
@@ -157,7 +149,12 @@ const CompanyForm = forwardRef<CompanyFormRef, CompanyFormProps>(
       queryKey: ["company", companyId],
       queryFn: async () => {
         if (!companyId) return null;
-        const response = await getCompanyById(updateCompanyPayload(companyId));
+        const response = await getCompanyById({
+          JSON: JSON.stringify({
+            Header: [{ CompanyId: companyId }],
+            Response: [{ ResponseText: "", ErrorCode: "" }],
+          }),
+        });
         const header = response?.Header;
         return Array.isArray(header) && header.length > 0 ? header[0] : null;
       },
@@ -176,10 +173,7 @@ const CompanyForm = forwardRef<CompanyFormRef, CompanyFormProps>(
     }, [companyData, setValue, isFetched]);
 
     return (
-      <form
-        className="flex font-plusJakarta flex-col gap-5 overflow-y-auto"
-        noValidate
-      >
+      <form className="flex font-plusJakarta flex-col gap-5 overflow-y-auto" noValidate>
         <div className="w-full">
           <h2 className="text-xl font-medium tracking-[0.38px] bg-clip-text bg-[linear-gradient(90deg,#0DAFDC_0%,#22E9A2_100%)] text-transparent ">
             Personal Details
@@ -419,7 +413,7 @@ const CompanyForm = forwardRef<CompanyFormRef, CompanyFormProps>(
         </div>
       </form>
     );
-  },
+  }
 );
 
 export default CompanyForm;

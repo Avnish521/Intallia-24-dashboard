@@ -3,10 +3,11 @@ import SignupForm from './SignupForm';
 import SignupImg from "@/assets/Hired-bro 1.svg";
 import { useState } from 'react';
 import OtpVerification from './OtpVerification';
-import { useToast } from "@/components/ui/use-toast"
+import { useNavigate } from 'react-router-dom';
 
 const Singup = () => {
   const [isShowV, setIsShowV] = useState(false);
+  const navigator = useNavigate();
 
   return (
     <div className="h-screen">
@@ -16,10 +17,10 @@ const Singup = () => {
             <img src={myImage} alt="Example" />
           </div>
           <div className="flex gap-2 items-center">
-            <button className="ring-1 rounded-lg py-1 px-3 ring-[#242426]">
+            <button className="rounded-lg bg-[#242426] py-2 px-3 text-[#FFFFFF] leading-[21px]" onClick={() => navigator('/login')}>
               Login
             </button>
-            <button className="rounded-lg bg-[#242426] py-2 px-3 text-[#FFFFFF] leading-[21px]">
+            <button className="ring-1 rounded-lg py-1 px-3 ring-[#242426]" onClick={() => navigator('/signup')}>
               Singup
             </button>
           </div>
@@ -35,7 +36,9 @@ const Singup = () => {
         {!isShowV && (
           <SignupForm
             onSubmit={(e) => {
-              console.log(e);
+              //API Call for signup
+              console.log("Form submitted:", e);
+              // After successful signup, show OTP verification
               setIsShowV(true);
             }}
           />

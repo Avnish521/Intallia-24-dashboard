@@ -2,7 +2,7 @@ import React from "react";
 import { Header } from "./Header";
 //import { SearchBar } from "@/components/common/SearchBar";
 import { SimulationGrid } from "@/pages/Simulation/SimulationGrid/SimulationGrid";
-import { MainLayout } from "@/components/layout/MainLayout";
+import { MainLayout } from "@/layout/MainLayout";
 
 const Simulation: React.FC = () => {
   return (

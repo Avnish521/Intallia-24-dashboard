@@ -9,9 +9,10 @@ import { useDeleteUser } from "@/queries/userQueries";
 
 const userColumns: Column<User>[] = [
   { key: "userID", header: "User ID", render: (user) => user.UserId },
-  { key: "name", header: "Name", render: (user) => user.UserGroupId },
+  { key: "name", header: "Name", render: (user) => user.FirstName + " " + user.LastName },
   { key: "email", header: "Email", render: (user) => user.Email },
-  { key: "phone", header: "Phone Number" },
+  { key: "phone", header: "Phone Number", render: (user) => user.ContactNumber },
+  { key: "address", header: "Address", render: (user) => user.Address },
 ];
 
 interface UserTableProps {

@@ -1,5 +1,5 @@
 import Pagination from "@/components/common/Pagination";
-import { MainLayout } from "@/components/layout/MainLayout";
+import { MainLayout } from "@/layout/MainLayout";
 import { UserTableActions } from "@/components/users/UserTableActions";
 import { useState } from "react";
 import { PaymentTable } from "./PaymentTable";

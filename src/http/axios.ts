@@ -6,6 +6,10 @@ const api = axios.create({
   headers: {
     'Content-Type': 'application/json',
     Accept: 'application/json',
+    // Authorization: `Bearer ${localStorage.getItem('token')}`,
+    // 'Access-Control-Allow-Origin': '*',
+    // 'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
+    // 'Access-Control-Allow-Headers': 'Content-Type, Authorization',
   },
 });
 
@@ -23,20 +27,21 @@ const api = axios.create({
 
 // Handle responses and errors
 api.interceptors.response.use(
-  (response: AxiosResponse) => response.data,
+  (response: AxiosResponse) => {
+    // Directly return response.data for convenience
+    return response.data;
+  },
   (error) => {
     const status = error?.response?.status;
 
     if (status === 401) {
       console.warn('Unauthorized - redirecting to login');
-      // Optional: Clear local/session storage or show toast
       localStorage.removeItem('token');
       window.location.href = '/login';
     }
 
     if (status >= 500) {
       console.error('Server error:', error.response?.data?.message || error.message);
-      // Optionally use a notification system (like react-toastify)
     }
 
     return Promise.reject(error);

@@ -3,35 +3,28 @@ import React, { useRef } from "react";
 import { SearchBar } from "../common/SearchBar";
 import { ActionButton } from "../common/ActionButton";
 import { UserForm } from "./UserForm";
-import { MainLayout } from "../layout/MainLayout";
+import { MainLayout } from "../../layout/MainLayout";
 import SidebarActions from "./SidebarActions";
 import { useParams } from "react-router-dom";
 import { useDeleteUser } from "@/queries/userQueries";
+import { FormRef } from "@/types";
 
 export const AddNewUser: React.FC = () => {
   const { userId } = useParams();
   console.log("User ID:", userId);
 
-  const userFormRef = useRef<{ submit: () => void }>(null);
+  const userFormRef = useRef<FormRef>(null);
   const { mutate: deleteUserMutation } = useDeleteUser();
 
   const handleAddNewUser = () => {
-    userFormRef.current?.submit();
-    console.log("Add New User clicked");
-  };
-
-  const handleSaveAndExit = () => {
-    console.log("Save & Exit clicked");
+    userFormRef.current?.submit("saveAndExit");
   };
 
   const handleSave = () => {
-    console.log("Save clicked");
+    userFormRef.current?.submit("save");
   };
 
-  const handleDelete = () => {
-    console.log("Delete clicked");
-  };
-
+  // Define actions based on whether userId exists
   const baseActions = !userId
     ? [
         {

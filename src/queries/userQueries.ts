@@ -1,4 +1,9 @@
-import { getScreen, deleteUser, getUserById, addUser } from "@/http/api.js";
+import {
+  getScreen,
+  deleteUser,
+  getUserProfileById,
+  addUser,
+} from "@/http/api.js";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
@@ -11,8 +16,8 @@ export function useUser() {
     queryKey: ["user"],
     queryFn: () =>
       getScreen({
-        ScreenName: "UserMaster",
-        LookUpKey: "GetList",
+        ScreenName: "UserProfile",
+        LookUpKey: "UserList",
         Filter1: "",
         Filter2: "",
         Filter3: "",
@@ -63,7 +68,7 @@ export function useUserById(userId?: string | number) {
   return useQuery({
     queryKey: ["user", userId],
     queryFn: () =>
-      getUserById({
+      getUserProfileById({
         JSON: JSON.stringify({
           Header: [{ UserId: userId }],
           Response: [{ ResponseText: "", ErrorCode: "" }],
