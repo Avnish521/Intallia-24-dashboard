@@ -6,9 +6,10 @@ import { UserTableActions } from "@/components/users/UserTableActions";
 import Pagination from "@/components/common/Pagination";
 import { exportToExcel, exportToPDF } from "@/utils";
 import { useUser } from "@/queries/userQueries";
+import { User } from "@/types";
 
 const USERS_PER_PAGE = 8;
-const EXPORT_COLUMNS = ["UserId", "UserGroupId", "Email", "Phone"] as const;
+const EXPORT_COLUMNS = ["UserId", "Name", "Email", "Phone", "Address"] as const;
 
 const UserManagement = () => {
   const navigate = useNavigate();
@@ -24,11 +25,12 @@ const UserManagement = () => {
   const startIndex = (currentPage - 1) * USERS_PER_PAGE;
   const endIndex = Math.min(startIndex + USERS_PER_PAGE, lookupData.length);
 
-  const exportBody = lookupData.map((user) => ({
+  const exportBody = lookupData.map((user: User) => ({
     UserId: user.UserId ?? "",
-    UserGroupId: user.UserGroupId ?? "",
+    Name: `${user.FirstName ?? ""} ${user.LastName ?? ""}`.trim(),
     Email: user.Email ?? "",
-    Phone: user.Phone ?? "",
+    Phone: user.ContactNumber ?? "",
+    Address: user.Address ?? "",
   }));
 
   return (
