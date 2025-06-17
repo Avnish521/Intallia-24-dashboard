@@ -23,8 +23,13 @@ export default tseslint.config(
         "warn",
         { allowConstantExport: true },
       ],
-      "@typescript-eslint/no-unused-vars": "off",
-      "@typescript-eslint/no-explicit-any": "warn"
+      "@typescript-eslint/no-unused-vars": ["error", { "argsIgnorePattern": "^_" }],
+      "@typescript-eslint/no-explicit-any": "error", // Enforce no 'any' usage
+      "@typescript-eslint/explicit-module-boundary-types": "error", // Require explicit return types
+      "@typescript-eslint/consistent-type-definitions": ["error", "interface"],
+      "@typescript-eslint/strict-boolean-expressions": "error",
+      "@typescript-eslint/no-inferrable-types": "error",
+      "no-console": ["warn", { allow: ["warn", "error"] }],
     },
   }
 );
