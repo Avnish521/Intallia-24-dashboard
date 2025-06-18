@@ -37,7 +37,7 @@ export function useDeleteUser() {
   const navigate = useNavigate();
 
   // Helper to create payload for delete API
-  const createDeletePayload = (userId: string | number) => ({
+  const deletePayload = (userId: string | number) => ({
     JSON: JSON.stringify({
       Header: [{ UserId: userId }],
       Response: [{ ResponseText: "", ErrorCode: "" }],
@@ -46,7 +46,7 @@ export function useDeleteUser() {
 
   return useMutation({
     mutationFn: async (userId: string | number) => {
-      const payload = createDeletePayload(userId);
+      const payload = deletePayload(userId);
       return deleteUser(payload);
     },
     onSuccess: () => {
@@ -82,8 +82,6 @@ export function useUserById(userId?: string | number) {
 
 //aDD new user
 export function useAddUser() {
-  const queryClient = useQueryClient();
-
   return useMutation({
     mutationFn: async (payload: { JSON: string }) => {
       return await addUser(payload);

@@ -11,12 +11,14 @@ export default defineConfig(() => ({
       "/api": {
         target: "http://3.6.31.102",
         changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/api/, ""),
+        // Use a robust rewrite for API proxy
+        rewrite: (p) => p.replace(/^\/api/, ""),
       },
     },
   },
   resolve: {
     alias: {
+      // Use posix for cross-platform compatibility
       "@": path.resolve(__dirname, "./src"),
     },
   },
