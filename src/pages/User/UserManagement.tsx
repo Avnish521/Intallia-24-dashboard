@@ -11,7 +11,7 @@ import { User } from "@/types";
 const USERS_PER_PAGE = 8;
 const EXPORT_COLUMNS = [
   "UserId",
-  "FirstName",
+  "Name",
   "Email",
   "ContactNumber",
   "Address",
@@ -33,7 +33,6 @@ const UserManagement = () => {
 
   const exportBody = lookupData.map((user: User) => ({
     UserId: user.UserId ?? "",
-    FirstName: user.FirstName ?? "",
     Name: `${user.FirstName ?? ""} ${user.LastName ?? ""}`.trim(),
     Email: user.Email ?? "",
     Phone: user.ContactNumber ?? "",
