@@ -70,7 +70,7 @@ export function useUserById(userId?: string | number) {
     queryFn: () =>
       getUserProfileById({
         JSON: JSON.stringify({
-          Header: [{ UserId: userId }],
+          UserProfile: [{ UserId: userId }],
           Response: [{ ResponseText: "", ErrorCode: "" }],
         }),
       }),

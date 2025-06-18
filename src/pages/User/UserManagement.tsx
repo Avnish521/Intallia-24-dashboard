@@ -8,7 +8,13 @@ import { exportToExcel, exportToPDF } from "@/utils";
 import { useUser } from "@/queries/userQueries";
 
 const USERS_PER_PAGE = 8;
-const EXPORT_COLUMNS = ["UserId", "UserGroupId", "Email", "Phone"] as const;
+const EXPORT_COLUMNS = [
+  "UserId",
+  "FirstName",
+  "Email",
+  "ContactNumber",
+  "Address",
+] as const;
 
 const UserManagement = () => {
   const navigate = useNavigate();
@@ -26,9 +32,10 @@ const UserManagement = () => {
 
   const exportBody = lookupData.map((user) => ({
     UserId: user.UserId ?? "",
-    UserGroupId: user.UserGroupId ?? "",
+    FirstName: user.FirstName ?? "",
     Email: user.Email ?? "",
-    Phone: user.Phone ?? "",
+    ContactNumber: user.ContactNumber ?? "",
+    Address: user.Address ?? "",
   }));
 
   return (
@@ -42,8 +49,12 @@ const UserManagement = () => {
 
             <UserTableActions
               onSearch={setSearchQuery}
-              handleDownload={() => exportToPDF(EXPORT_COLUMNS, exportBody, "UserList")}
-              exportInExcel={() => exportToExcel(EXPORT_COLUMNS, exportBody, "UserList")}
+              handleDownload={() =>
+                exportToPDF(EXPORT_COLUMNS, exportBody, "UserList")
+              }
+              exportInExcel={() =>
+                exportToExcel(EXPORT_COLUMNS, exportBody, "UserList")
+              }
               buttonLink={() => navigate("/user/add-new-user")}
               buttonLabel="Add New User"
             />
