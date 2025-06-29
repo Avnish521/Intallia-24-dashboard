@@ -1,111 +1,62 @@
-// src/store/AuthStore.ts
 import { create } from "zustand";
-import { login, logout } from "@/http/api";
-import { toast } from "sonner";
-import { LoginResponse, ValidUser } from "@/types";
+import { login as apiLogin } from "@/http/api";
+import { storeUserData, clearAuthStorage, getUserData } from "@/utils";
+import { STORAGE_KEY } from "@/constants";
 
+const initialUserData = getUserData(STORAGE_KEY);
 
-type State = {
+type AuthState = {
   token: string | null;
-  userID: string | null;
+  userId: string | null;
   userGroupId: string | null;
   companyId: string | null;
   isValid: boolean;
 };
 
-type Actions = {
-  login: (userid: string, password: string) => Promise<void>;
-  logout: () => Promise<void>;
+type AuthActions = {
+  login: (userId: string, password: string) => Promise<void>;
+  logout: () => void;
 };
 
+const getInitialState = (): AuthState => ({
+  token: initialUserData?.Token ?? null,
+  userId: initialUserData?.UserId ?? null,
+  userGroupId: initialUserData?.UserGroupId ?? null,
+  companyId: initialUserData?.CompanyId ?? null,
+  isValid: initialUserData?.IsValid === "true",
+});
 
-const storageKeys = [
-  "token",
-  "userID",
-  "userGroupId",
-  "companyId",
-  "isValid",
-] as const;
+export const useAuthStore = create<AuthState & AuthActions>((set) => ({
+  ...getInitialState(),
 
-
-const clearAuthStorage = () => {
-  storageKeys.forEach((key) => localStorage.removeItem(key));
-};
-
-const setAuthStorage = (user: ValidUser) => {
-  localStorage.setItem("token", user.Token);
-  localStorage.setItem("userID", user.UserId);
-  localStorage.setItem("userGroupId", user.UserGroupId);
-  localStorage.setItem("companyId", user.CompanyId);
-  localStorage.setItem("isValid", user.IsValid);
-};
-
-
-export const useAuthStore = create<State & Actions>((set) => ({
-  token: localStorage.getItem("token"),
-  userID: localStorage.getItem("userID"),
-  userGroupId: localStorage.getItem("userGroupId"),
-  companyId: localStorage.getItem("companyId"),
-  isValid: localStorage.getItem("isValid") === "true",
-
-  login: async (userid, password) => {
+  login: async (userId, password) => {
     try {
-      const payload = { LoginId: userid, Password: password, isValid: "" };
-      const res = await login(payload);
-      const data: LoginResponse = res.data;
-      const user: ValidUser | undefined =
-      Array.isArray(data.UserValid) && data.UserValid.length > 0
-        ? data.UserValid[0]
-          : undefined;
+      const payload = { LoginId: userId, Password: password, isValid: "" };
+      const response = await apiLogin(payload);
+      const user = response?.UserValid?.[0];
 
       if (user) {
-        setAuthStorage(user);
+        storeUserData(STORAGE_KEY, user);
         set({
-          token: user.Token,
-          userID: user.UserId,
-          userGroupId: user.UserGroupId,
-          companyId: user.CompanyId,
-          isValid: true,
+          token: user.Token ?? null,
+          userId: user.UserId ?? null,
+          userGroupId: user.UserGroupId ?? null,
+          companyId: user.CompanyId ?? null,
+          isValid: user.IsValid === "true",
         });
       } else {
-        clearAuthStorage();
-        set({
-          token: null,
-          userID: null,
-          userGroupId: null,
-          companyId: null,
-          isValid: false,
-        });
+        clearAuthStorage(STORAGE_KEY);
+        set(getInitialState());
       }
     } catch (error) {
-      clearAuthStorage();
-      set({
-        token: null,
-        userID: null,
-        userGroupId: null,
-        companyId: null,
-        isValid: false,
-      });
-
+      console.error("Login failed", error);
+      clearAuthStorage(STORAGE_KEY);
+      set(getInitialState());
     }
   },
 
-  logout: async () => {
-    try {
-      const res = await logout();
-      if (res.ErrorCode !== "0") {
-        throw new Error(res.ErrorMessage || "Logout failed");
-      }
-      clearAuthStorage();
-      set({
-        token: null,
-        userID: null,
-        userGroupId: null,
-        companyId: null,
-        isValid: false,
-      });
-    } catch (error) {
-      toast.error("Logout failed. Please try again.");
-    }
+  logout: () => {
+    clearAuthStorage(STORAGE_KEY);
+    set(getInitialState());
   },
 }));

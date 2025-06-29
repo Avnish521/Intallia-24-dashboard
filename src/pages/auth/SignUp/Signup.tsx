@@ -4,10 +4,46 @@ import SignupImg from "@/assets/Hired-bro 1.svg";
 import { useState } from 'react';
 import OtpVerification from './OtpVerification';
 import { useNavigate } from 'react-router-dom';
+import { SignupFormValues } from "@/schema/authSchema";
+import { useSignup } from "@/queries/authQuery";
+//import { storeUserData } from '@/utils';
+
 
 const Singup = () => {
   const [isShowV, setIsShowV] = useState(false);
   const navigator = useNavigate();
+  const { mutateAsync: signup } = useSignup();
+
+  const handleSignup = async (formData: SignupFormValues) => {
+    const payload = {
+      JSON: JSON.stringify({
+        Header: [
+          {
+            FirstName: formData.firstName,
+            LastName: formData.lastName,
+            Email: formData.email,
+            ContactNumber: formData.contactNumber,
+            Password: formData.password
+          }
+        ],
+        Response: [
+          {
+            ResponseText: "",
+            ErrorCode: ""
+          }
+        ]
+      })
+    };
+
+    await signup(payload, {
+      onSuccess: () => {
+        setIsShowV(true);
+      }
+    });
+    // console.log("Form Data:", formData);
+    // storeUserData("userData", { "UserId": "U14", "UserGroupId": "Student", "CompanyId": "Intallia24", "IsValid": "true", "Token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySWQiOiJVMTQiLCJqdGkiOiI5N2JlMDAxNS01YWYxLTQzMmEtYjBiYi04Njk4ODJiZTMwZTgiLCJleHAiOjE3NTEwNDIyMTcsImlzcyI6IioiLCJhdWQiOiIqIn0.pOSg3AYaqNPL6annPJHQAtnG7nxWxe_8en3ssjV3Ang" });
+    //  setIsShowV(true);
+  }
 
   return (
     <div className="h-screen">
@@ -34,14 +70,7 @@ const Singup = () => {
           </h2>
         </div>
         {!isShowV && (
-          <SignupForm
-            onSubmit={(e) => {
-              //API Call for signup
-              console.log("Form submitted:", e);
-              // After successful signup, show OTP verification
-              setIsShowV(true);
-            }}
-          />
+          <SignupForm onSubmit={(e) => handleSignup(e)} />
         )}
         {isShowV && <OtpVerification />}
       </div>

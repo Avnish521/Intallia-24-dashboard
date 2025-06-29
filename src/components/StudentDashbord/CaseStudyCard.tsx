@@ -1,12 +1,11 @@
 import React from "react";
 import { ArrowUpRight } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import "@/design-system.css";
 import { useNavigate, Link } from "react-router-dom";
+import { PATH } from "@/constants/index";
 
 interface CaseStudyCardProps {
-  icon: string;
   title: string;
   tools: string;
   backgroundImage: string;
@@ -14,7 +13,6 @@ interface CaseStudyCardProps {
 }
 
 export const CaseStudyCard: React.FC<CaseStudyCardProps> = ({
-  icon,
   title,
   tools,
   backgroundImage,
@@ -26,7 +24,7 @@ export const CaseStudyCard: React.FC<CaseStudyCardProps> = ({
     <article className="relative h-full mr-2">
       <div className="absolute top-0 right-0 z-10 ">
         <Link
-          to={`/user-details/${id}`}
+          to={`${PATH.CASE_STUDY}/${id}`}
           className="bg-[#1D1D1F] p-3 flex items-center justify-center rounded-lg w-[48px] h-[48px] cfs"
         >
           <ArrowUpRight className="text-white w-6 h-6" />
@@ -50,7 +48,7 @@ export const CaseStudyCard: React.FC<CaseStudyCardProps> = ({
             <div className="mt-auto">
               <Button
                 className="btn"
-                onClick={() => navigate(`/user-details/${id}`)}
+                onClick={() => navigate(`${PATH.CASE_STUDY}/${id}`)}
               >
                 Start Now!
               </Button>

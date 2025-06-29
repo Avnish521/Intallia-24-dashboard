@@ -1,4 +1,3 @@
-import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import arrowIcon from '@/assets/arrow-up-right.svg'; // ✅ Import the image
 
@@ -7,7 +6,7 @@ const UserPreferencesNav = () => {
   const navigate = useNavigate();
 
   const handleGoToDashboard = () => {
-    navigate('/user-dashboard');
+    navigate('/');
   };
 
   return (

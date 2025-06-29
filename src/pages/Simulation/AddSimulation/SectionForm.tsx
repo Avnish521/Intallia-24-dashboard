@@ -24,7 +24,7 @@ type SoftwareOptions = {
 interface SectionFromProps {
   softwareOptions: SoftwareOptions[];
   setSelectedSoftware: (software: string) => void;
-  setSections: (section) => void; // Consider creating a proper type for sections
+  setSections: (section: any) => void; // Consider creating a proper type for sections
 }
 
 export function SectionForm({
@@ -32,7 +32,7 @@ export function SectionForm({
   setSelectedSoftware,
   setSections,
 }: SectionFromProps) {
-  const { userID, companyId } = useAuthStore((state) => state);
+  const { userId: userID, companyId } = useAuthStore();
   const { simulation, setSection } = useSimulationStore((state) => state);
   const addSection = useAddSection();
 
@@ -53,6 +53,9 @@ export function SectionForm({
 
   const onSubmit = async (formData: FormData) => {
     // handle form data here
+    const selectedSoftware = softwareOptions.find(
+      (option) => option.value === formData.software,
+    );
     const payload = {
       JSON: JSON.stringify({
         Header: [
@@ -60,9 +63,7 @@ export function SectionForm({
             SectionId: "",
             SimulationId: simulation?.SimulationId || "",
             SoftwareId: formData.software,
-            Title: formData.software
-              ? softwareOptions[formData.software]?.label
-              : "",
+            Title: selectedSoftware ? selectedSoftware.label : "",
             Order: "1",
             Link: "",
             StudentFile: formData.studentFile,
@@ -72,9 +73,9 @@ export function SectionForm({
             CreateDate: new Date().toISOString(),
             ModifyBy: userID,
             ModifyDate: new Date().toISOString(),
-            ...Array.from({ length: 15 }, (_, i) => ({
-              [`Intallia${i + 1}`]: null,
-            })).reduce((acc, curr) => ({ ...acc, ...curr }), {}),
+            ...Object.fromEntries(
+              Array.from({ length: 15 }, (_, i) => [`Intallia${i + 1}`, null]),
+            ),
           },
         ],
         Response: [
@@ -104,7 +105,10 @@ export function SectionForm({
           value={watch("software") || ""}
           onChange={(val) => {
             setValue("software", val);
-            setSelectedSoftware(val ? softwareOptions.find(option => option.value === val)?.label : "");
+            const selectedOption = softwareOptions.find(
+              (option) => option.value === val,
+            );
+            setSelectedSoftware(selectedOption ? selectedOption.label : "");
           }}
           options={softwareOptions}
           error={errors.software?.message}

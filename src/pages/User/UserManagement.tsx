@@ -4,9 +4,10 @@ import { MainLayout } from "@/layout/MainLayout";
 import { UserTable } from "@/components/users/UserTable";
 import { UserTableActions } from "@/components/users/UserTableActions";
 import Pagination from "@/components/common/Pagination";
-import { exportToExcel, exportToPDF } from "@/utils";
+import { exportToExcel, exportToPDF, getPaginatedData } from "@/utils";
 import { useUser } from "@/queries/userQueries";
 import { User } from "@/types";
+import { BASE_TEXT, PATH } from "@/constants";
 
 const USERS_PER_PAGE = 8;
 const EXPORT_COLUMNS = ["UserId", "Name", "Email", "Phone", "Address"] as const;
@@ -20,12 +21,27 @@ const UserManagement = () => {
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [searchQuery, setSearchQuery] = useState<string>("");
 
-  const totalPages = Math.ceil(lookupData.length / USERS_PER_PAGE);
+  // Filter users by search query
+  const filteredUsers: User[] = lookupData.filter((user: User) => {
+    const searchStr = searchQuery.toLowerCase();
+    return (
+      user.FirstName?.toLowerCase().includes(searchStr) ||
+      user.LastName?.toLowerCase().includes(searchStr) ||
+      user.Email?.toLowerCase().includes(searchStr) ||
+      user.ContactNumber?.toLowerCase().includes(searchStr) ||
+      user.Address?.toLowerCase().includes(searchStr) ||
+      user.UserId?.toLowerCase().includes(searchStr)
+    );
+  });
 
-  const startIndex = (currentPage - 1) * USERS_PER_PAGE;
-  const endIndex = Math.min(startIndex + USERS_PER_PAGE, lookupData.length);
+  // Get paginated data
+  const { displayedItems: displayedUsers, startIndex, endIndex, totalPages } = getPaginatedData(
+    filteredUsers,
+    currentPage,
+    USERS_PER_PAGE
+  );
 
-  const exportBody = lookupData.map((user: User) => ({
+  const exportBody = filteredUsers.map((user: User) => ({
     UserId: user.UserId ?? "",
     Name: `${user.FirstName ?? ""} ${user.LastName ?? ""}`.trim(),
     Email: user.Email ?? "",
@@ -44,10 +60,14 @@ const UserManagement = () => {
 
             <UserTableActions
               onSearch={setSearchQuery}
-              handleDownload={() => exportToPDF(EXPORT_COLUMNS, exportBody, "UserList")}
-              exportInExcel={() => exportToExcel(EXPORT_COLUMNS, exportBody, "UserList")}
-              buttonLink={() => navigate("/user/add-new-user")}
-              buttonLabel="Add New User"
+              handleDownload={() =>
+                exportToPDF(EXPORT_COLUMNS, exportBody, "UserList")
+              }
+              exportInExcel={() =>
+                exportToExcel(EXPORT_COLUMNS, exportBody, "UserList")
+              }
+              buttonLink={() => navigate(PATH.USER_ADD)}
+              buttonLabel={BASE_TEXT.ADD_NEW_USER}
             />
 
             <div className="bg-white p-6 rounded-lg">
@@ -55,7 +75,7 @@ const UserManagement = () => {
                 startIndex={startIndex}
                 endIndex={endIndex}
                 searchQuery={searchQuery}
-                users={lookupData}
+                users={displayedUsers}
               />
 
               <Pagination

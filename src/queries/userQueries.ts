@@ -4,14 +4,19 @@ import {
   getUserProfileById,
   addUser,
 } from "@/http/api.js";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import {
+  useMutation,
+  useQuery,
+  useQueryClient,
+  UseQueryResult,
+} from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 
 /**
  * Custom hook to fetch user list.
  */
-export function useUser() {
+export function useUser(): UseQueryResult<any, any> {
   return useQuery({
     queryKey: ["user"],
     queryFn: () =>
@@ -64,13 +69,13 @@ export function useDeleteUser() {
 /**
  * Custom hook to fetch a single user by ID.
  */
-export function useUserById(userId?: string | number) {
+export function useUserById(userId?: string | number) : UseQueryResult<any, any> {
   return useQuery({
     queryKey: ["user", userId],
     queryFn: () =>
       getUserProfileById({
         JSON: JSON.stringify({
-          Header: [{ UserId: userId }],
+          UserProfile: [{ UserId: userId }],
           Response: [{ ResponseText: "", ErrorCode: "" }],
         }),
       }),

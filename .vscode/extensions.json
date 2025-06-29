@@ -9,7 +9,6 @@
     "xabikos.javascriptsnippets", // JavaScript snippets
     "christian-kohler.path-intellisense", // Path autocompletion
     "christian-kohler.npm-intellisense", // NPM package autocompletion
-    "ms-vscode.vscode-typescript-tslint-plugin", // TypeScript linting
 
 
     // 🛠️ Development Enhancements
@@ -35,9 +34,6 @@
     "github.vscode-pull-request-github", // GitHub PRs & issues
 
     // AI Code Review
-    "github.copilot",
-    "coderabbit.coderabbit",
-    "codeium.codeium",
-    "amazonwebservices.aws-toolkit-vscode"
+    "github.copilot"
   ]
 }

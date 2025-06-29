@@ -40,7 +40,7 @@ src/
 ├── hooks/              # Shared hooks
 ├── layouts/            # AppShell, AdminLayout, etc.
 ├── pages/              # Page-level route components
-├── http/           # API clients (e.g., Axios logic)
+├── http/               # API clients (e.g., Axios logic)
 ├── routes/             # Route definitions & guards
 ├── store/              # Global state
 ├── types/              # Global types & interfaces
@@ -53,9 +53,7 @@ src/
 
 - `ESLint` (Airbnb or custom rules)
 - `Prettier` for formatting
-- `Husky` + `lint-staged` for pre-commit
 - `tsconfig.json` with strict mode
-- `jest` or `vitest` for testing
 
 ---
 
@@ -66,14 +64,7 @@ src/
 - **React Query** for data fetching
 - **Axios** in `http/`
 - **Zod/Yup** for validation
-- **Tailwind / MUI / Bootstrap 5** (see config)
-
----
-
-## 🧪 Testing Rule
-
-- Every new component must have a test.
-- Use `jest` + `@testing-library/react` (`describe`, `it`, `expect`).
+- **Tailwind** (see config)
 
 ---
 
@@ -89,7 +80,7 @@ src/
 
 ## 🧷 Anchor Instructions (High Priority)
 
-- All reusable logic goes in `/utils`, `/hooks`, or `/services`.
+- All reusable logic goes in `/utils`, `/hooks`, or `/http`.
 - Never use `any` as a type.
 - Use `.tsx` for components, `.ts` for utils/services.
 - Follow naming conventions: `PascalCase` for components, `camelCase` for hooks, `SCREAMING_SNAKE_CASE` for constants.
@@ -99,4 +90,3 @@ src/
 **Continuously review project structure and code. Assist with every user action.**
 
 🛑 *Never generate random or unstructured code. Always follow this guide.*
-

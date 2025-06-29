@@ -1,387 +1,181 @@
-import React from "react";
 import { createBrowserRouter, Outlet } from "react-router-dom";
-import PrivateRoute from "./PrivateRoute";
-import Login from "@/pages/auth/Login/Login";
-import UserGroupDetails from "@/pages/RolesAndAccess/UserGroupDetails";
+import { lazy } from "react";
 
-import Index from "@/pages/Index";
-import NotFound from "@/pages/NotFound";
-import Signup from "@/pages/auth/SignUp/Signup";
+const PrivateRoute = lazy(() => import("./PrivateRoute"));
+const PublicRoute = lazy(() => import("./PublicRoute"));
 
-import UserManagement from "@/pages/User/UserManagement";
-import CompanyManagement from "@/pages/Company/CompanyManagement";
-import RolesAndAccess from "@/pages/RolesAndAccess/RolesAndAccess";
+const Login = lazy(() => import("@/pages/auth/Login/Login"));
+const Signup = lazy(() => import("@/pages/auth/SignUp/Signup"));
+const NotFound = lazy(() => import("@/pages/NotFound"));
+const AdminDashboard = lazy(() => import("@/pages/AdminDashboard"));
 
-import { AddNewUser } from "@/components/users/AddNewUser";
-import AddNewCompany from "@/pages/Company/AddNewCompany";
-//import { RoleForm } from "@/pages/RolesAndAccess/RoleForm";
+const UserManagement = lazy(() => import("@/pages/User/UserManagement"));
+const AddNewUser = lazy(() => import("@/components/users/AddNewUser"));
+const UserDetails = lazy(() => import("@/pages/UserDetails/UserDetails"));
+const Index = lazy(() => import("@/pages/Index"));
 
-import Simulation from "@/pages/Simulation/Simulation";
-import AddSimulation from "@/pages/Simulation/AddSimulation/AddSimulation";
+const CompanyManagement = lazy(() => import("@/pages/Company/CompanyManagement"));
+const AddNewCompany = lazy(() => import("@/pages/Company/AddNewCompany"));
 
-import Packages from "@/pages/Packages/Packages";
-import { AddNewPackage } from "@/pages/Packages/AddNewPackage";
-import { ViewPackage } from "@/pages/Packages/ViewPackage";
-import DataScience from "@/pages/Packages/DataScience";
+const RolesAndAccess = lazy(() => import("@/pages/RolesAndAccess/RolesAndAccess"));
+const AddRole = lazy(() => import("@/pages/RolesAndAccess/AddRole"));
+const UserGroupDetails = lazy(() => import("@/pages/RolesAndAccess/UserGroupDetails"));
 
-import Plans from "@/pages/Packages/Plans";
+const Simulation = lazy(() => import("@/pages/Simulation/Simulation"));
+const AddSimulation = lazy(() => import("@/pages/Simulation/AddSimulation/AddSimulation"));
 
-import { Invitations } from "@/components/Invitations/Invitations";
-import Payments from "@/pages/Payments/Payments";
-import UserAssignment from "@/pages/UserAssignment/UserAssignment";
-import Profile from "@/components/Profile/Profile";
+const Software = lazy(() => import("@/pages/Software/Software"));
+const AddNewSoftware = lazy(() => import("@/pages/Software/AddNewSoftware/AddNewSoftware"));
 
-import ViewSkillMatrix from "@/pages/SkillMatrix/ViewSkillMatrix/ViewSkillMatrix";
-import SkillMatrix from "@/pages/SkillMatrix/SkillMatrix";
-import SkillMatrixView from "@/pages/SkillMatrix/SkillMatrixView";
-import Score from "@/pages/SkillMatrix/ViewSkillMatrix/Score";
+const Packages = lazy(() => import("@/pages/Packages/Packages"));
+const AddNewPackage = lazy(() => import("@/pages/Packages/AddNewPackage"));
+const ViewPackage = lazy(() => import("@/pages/Packages/ViewPackage"));
+const DataScience = lazy(() => import("@/pages/Packages/DataScience"));
+const Plans = lazy(() => import("@/pages/Packages/plans"));
 
-import UserDetails from "@/pages/UserDetails/UserDetails";
-import { UserDashboard } from "@/pages/UserDashboard/UserDashboard";
-import CaseStudyDetail from "@/components/user dashboard/CaseStudyDetail";
-import UserPreferences from "@/pages/UserPreferences/UserPreferences";
-import InnerPage from "@/pages/InnerPage/InnerPage";
-import AddRole from "@/pages/RolesAndAccess/AddRole";
+const Invitations = lazy(() => import("@/components/Invitations/Invitations"));
+const Payments = lazy(() => import("@/pages/Payments/Payments"));
+const UserAssignment = lazy(() => import("@/pages/UserAssignment/UserAssignment"));
+const Profile = lazy(() => import("@/components/Profile/Profile"));
 
-//Software
-import Software from "@/pages/Software/Software";
-import AddNewSoftware from "@/pages/Software/AddNewSoftware/AddNewSoftware";
+const ViewSkillMatrix = lazy(() => import("@/pages/SkillMatrix/ViewSkillMatrix/ViewSkillMatrix"));
+const SkillMatrix = lazy(() => import("@/pages/SkillMatrix/SkillMatrix"));
+const SkillMatrixView = lazy(() => import("@/pages/SkillMatrix/SkillMatrixView"));
+const Score = lazy(() => import("@/pages/SkillMatrix/ViewSkillMatrix/Score"));
 
-// Route definitions
+const CaseStudyDetail = lazy(() => import("@/components/StudentDashbord/CaseStudyDetail"));
+const UserPreferences = lazy(() => import("@/pages/UserPreferences/UserPreferences"));
+const InnerPage = lazy(() => import("@/pages/InnerPage/InnerPage"));
+
+// Helper layout for nested routes
+const AdminLayout = () => <Outlet />;
+const MainLayout = () => <Outlet />;
+
 const router = createBrowserRouter([
-  { path: "/signup", element: <Signup /> },
-  { path: "/login", element: <Login /> },
+  {
+    path: "/signup",
+    element: (
+      <PublicRoute>
+        <Signup />
+      </PublicRoute>
+    ),
+  },
+  {
+    path: "/login",
+    element: (
+      <PublicRoute>
+        <Login />
+      </PublicRoute>
+    ),
+  },
+
   {
     path: "/",
     element: (
-      <PrivateRoute>
-        <Index />
+      <PrivateRoute allowedRoles={["Student", "Admin"]}>
+        <MainLayout />
       </PrivateRoute>
     ),
     errorElement: <NotFound />,
-  },
-  {
-    path: "/user-role-&-access",
-    element: (
-      <PrivateRoute>
-        <RolesAndAccess />
-      </PrivateRoute>
-    ),
-  },
-  {
-    path: "/add-role",
-    element: (
-      <PrivateRoute>
-        <AddRole />
-      </PrivateRoute>
-    ),
-  },
-  {
-    path: "/user-role-&-access/:UserGroupId",
-    element: (
-      <PrivateRoute>
-        <UserGroupDetails />
-      </PrivateRoute>
-    ),
-  },
-  {
-    path: "/user",
-    element: (
-      <PrivateRoute>
-        <Outlet />
-      </PrivateRoute>
-    ),
     children: [
-      {
-        index: true,
-        element: (
-          <PrivateRoute>
-            <UserManagement />
-          </PrivateRoute>
-        ),
-      },
-      {
-        path: "add-new-user",
-        element: (
-          <PrivateRoute>
-            <AddNewUser />
-          </PrivateRoute>
-        ),
-      },
-      {
-        path: ":userId",
-        element: (
-          <PrivateRoute>
-            <AddNewUser />
-          </PrivateRoute>
-        ),
-      },
+      { index: true, element: <Index /> },
+      { path: "case-study/:id", element: <CaseStudyDetail /> },
+      { path: "user-details/:id", element: <UserDetails /> },
+      { path: "preferences", element: <UserPreferences /> },
     ],
   },
+
   {
-    path: "/company",
+    path: "/admin",
     element: (
-      <PrivateRoute>
-        <Outlet />
+      <PrivateRoute allowedRoles={["Admin"]}>
+        <AdminLayout />
       </PrivateRoute>
     ),
+    errorElement: <NotFound />,
     children: [
+      { path: "dashboard", element: <AdminDashboard /> },
+
+      // User Management
       {
-        index: true,
-        element: (
-          <PrivateRoute>
-            <CompanyManagement />
-          </PrivateRoute>
-        ),
+        path: "user",
+        element: <Outlet />,
+        children: [
+          { index: true, element: <UserManagement /> },
+          { path: "add", element: <AddNewUser /> },
+          { path: ":userId", element: <AddNewUser /> },
+        ],
       },
+
+      // Company Management
       {
-        path: "add-company",
-        element: (
-          <PrivateRoute>
-            <AddNewCompany />
-          </PrivateRoute>
-        ),
+        path: "company",
+        element: <Outlet />,
+        children: [
+          { index: true, element: <CompanyManagement /> },
+          { path: "add", element: <AddNewCompany /> },
+          { path: "edit/:companyId", element: <AddNewCompany /> },
+        ],
       },
+
+      // Roles and Access
       {
-        path: ":companyId",
-        element: (
-          <PrivateRoute>
-            <AddNewCompany />
-          </PrivateRoute>
-        ),
+        path: "user-role-&-access",
+        element: <Outlet />,
+        children: [
+          { index: true, element: <RolesAndAccess /> },
+          { path: "add-role", element: <AddRole /> },
+          { path: ":UserGroupId", element: <UserGroupDetails /> },
+        ],
       },
+
+      // Simulation
+      {
+        path: "simulation",
+        element: <Outlet />,
+        children: [
+          { index: true, element: <Simulation /> },
+          { path: "new-simulation", element: <AddSimulation /> },
+          { path: ":simulationId", element: <AddSimulation /> },
+        ],
+      },
+
+      // Software
+      {
+        path: "software",
+        element: <Outlet />,
+        children: [
+          { index: true, element: <Software /> },
+          { path: "new-software", element: <AddNewSoftware /> },
+          { path: ":softwareId", element: <AddNewSoftware /> },
+        ],
+      },
+
+      // Packages
+      {
+        path: "packages",
+        element: <Outlet />,
+        children: [
+          { index: true, element: <Packages /> },
+          { path: "add-new-package", element: <AddNewPackage /> },
+          { path: ":id", element: <ViewPackage /> },
+        ],
+      },
+
+      { path: "datascience", element: <DataScience /> },
+      { path: "plan", element: <Plans /> },
+      { path: "user-assignment", element: <UserAssignment /> },
+      { path: "payments", element: <Payments /> },
+      { path: "skill-matrix", element: <SkillMatrix /> },
+      { path: "view-skill-matrix", element: <ViewSkillMatrix /> },
+      { path: "skill-matrix-view", element: <SkillMatrixView /> },
+      { path: "score", element: <Score /> },
+      { path: "profile", element: <Profile /> },
+      { path: "invitations", element: <Invitations /> },
+      { path: "inner-page", element: <InnerPage /> },
     ],
   },
-  {
-    path: "/simulation",
-    element: (
-      <PrivateRoute>
-        <Outlet />
-      </PrivateRoute>
-    ),
-    children: [
-      {
-        index: true,
-        element: (
-          <PrivateRoute>
-            <Simulation />
-          </PrivateRoute>
-        ),
-      },
-      {
-        path: "new-simulation",
-        element: (
-          <PrivateRoute>
-            <AddSimulation />
-          </PrivateRoute>
-        ),
-      },
-      {
-        path: ":simulationId",
-        element: (
-          <PrivateRoute>
-            <AddSimulation />
-          </PrivateRoute>
-        ),
-      },
-    ],
-  },
-  {
-    path: "/software",
-    element: (
-      <PrivateRoute>
-        <Outlet />
-      </PrivateRoute>
-    ),
-    children: [
-      {
-        index: true,
-        element: (
-          <PrivateRoute>
-            <Software />
-          </PrivateRoute>
-        ),
-      },
-      {
-        path: "new-software",
-        element: (
-          <PrivateRoute>
-            <AddNewSoftware />
-          </PrivateRoute>
-        ),
-      },
-      {
-        path: ":softwareId",
-        element: (
-          <PrivateRoute>
-            <AddNewSoftware />
-          </PrivateRoute>
-        ),
-      },
-    ],
-  },
-  {
-    path: "/packages",
-    element: (
-      <PrivateRoute>
-        <Outlet />
-      </PrivateRoute>
-    ),
-    children: [
-      {
-        index: true,
-        element: (
-          <PrivateRoute>
-            <Packages />
-          </PrivateRoute>
-        ),
-      },
-      {
-        path: "add-new-package",
-        element: (
-          <PrivateRoute>
-            <AddNewPackage />
-          </PrivateRoute>
-        ),
-      },
-      {
-        path: ":id",
-        element: (
-          <PrivateRoute>
-            <ViewPackage />
-          </PrivateRoute>
-        ),
-      },
-    ],
-  },
-  {
-    path: "datascience",
-    element: (
-      <PrivateRoute>
-        <DataScience />
-      </PrivateRoute>
-    ),
-  },
-  {
-    path: "/user-assignment",
-    element: (
-      <PrivateRoute>
-        <UserAssignment />
-      </PrivateRoute>
-    ),
-  },
-  // {
-  //   path: "/add-role",
-  //   element: (
-  //     <PrivateRoute>
-  //       <RoleForm />
-  //     </PrivateRoute>
-  //   ),
-  // },
-  {
-    path: "/plan",
-    element: (
-      <PrivateRoute>
-        <Plans />
-      </PrivateRoute>
-    ),
-  },
-  {
-    path: "/payments",
-    element: (
-      <PrivateRoute>
-        <Payments />
-      </PrivateRoute>
-    ),
-  },
-  {
-    path: "/skill-matrix",
-    element: (
-      <PrivateRoute>
-        <SkillMatrix />
-      </PrivateRoute>
-    ),
-  },
-  {
-    path: "/view-skill-matrix",
-    element: (
-      <PrivateRoute>
-        <ViewSkillMatrix />
-      </PrivateRoute>
-    ),
-  },
-  {
-    path: "/skill-matrix-view",
-    element: (
-      <PrivateRoute>
-        <SkillMatrixView />
-      </PrivateRoute>
-    ),
-  },
-  {
-    path: "/score",
-    element: (
-      <PrivateRoute>
-        <Score />
-      </PrivateRoute>
-    ),
-  },
-  {
-    path: "/profile",
-    element: (
-      <PrivateRoute>
-        <Profile />
-      </PrivateRoute>
-    ),
-  },
-  {
-    path: "/invitations",
-    element: (
-      <PrivateRoute>
-        <Invitations />
-      </PrivateRoute>
-    ),
-  },
-  {
-    path: "/user-details/:id",
-    element: (
-      <PrivateRoute>
-        <UserDetails />
-      </PrivateRoute>
-    ),
-  },
-  {
-    path: "/user-dashboard",
-    element: (
-      <PrivateRoute>
-        <UserDashboard />
-      </PrivateRoute>
-    ),
-  },
-  {
-    path: "/case-study-detail",
-    element: (
-      <PrivateRoute>
-        <CaseStudyDetail />
-      </PrivateRoute>
-    ),
-  },
-  {
-    path: "/preferences",
-    element: (
-      <PrivateRoute>
-        <UserPreferences />
-      </PrivateRoute>
-    ),
-  },
-  {
-    path: "/inner-page",
-    element: (
-      <PrivateRoute>
-        <InnerPage />
-      </PrivateRoute>
-    ),
-  },
+
   { path: "*", element: <NotFound /> },
 ]);
 

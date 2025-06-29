@@ -27,26 +27,26 @@ const iconMap: Record<string, string> = {
 };
 
 const screenRouteMap: Record<string, string> = {
-  "Dashboard": "/",
-  "Roles & Access": "/roles",
-  "User Management": "/user",
-  "Company": "/company",
-  "Add Company": "/company/add-company",
-  "Users": "/users",
-  "Add User": "/add-new-user",
-  "User Assignment": "/user-assignment",
-  "Simulation": "/simulation",
-  "New Simulation": "/new-simulation",
-  "Skill Matrix": "/skill-matrix",
-  "Plans & Package": "/plans-package",
-  "Plans": "/plans-package",
-  "Package": "/plans-package",
-  "Add Package": "/add-package",
-  "Payments": "/payments",
-  "Invitations": "/invitations",
-  "Profile": "/profile",
-  "Score": "/score",
-  "Preferences": "/preferences",
+  "Dashboard": "/admin/dashboard",
+  "Roles & Access": "/admin/roles",
+  "User Management": "/admin/user",
+  "Company": "/admin/company",
+  "Add Company": "/admin/company/add-company",
+  "Users": "/admin/users",
+  "Add User": "/admin/add-new-user",
+  "User Assignment": "/admin/user-assignment",
+  "Simulation": "/admin/simulation",
+  "New Simulation": "/admin/simulation/new-simulation",
+  "Skill Matrix": "/admin/skill-matrix",
+  "Plans & Package": "/admin/plans-package",
+  "Plans": "/admin/plans-package",
+  "Package": "/admin/plans-package",
+  "Add Package": "/admin/add-package",
+  "Payments": "/admin/payments",
+  "Invitations": "/admin/invitations",
+  "Profile": "/admin/profile",
+  "Score": "/admin/score",
+  "Preferences": "/admin/preferences",
 };
 
 // --- Types ---
@@ -92,13 +92,13 @@ export function Sidebar() {
           { headers: { "Content-Type": "application/json" } }
         );
 
-        const transformMenu = (items): MenuItem[] =>
-          items.map((item) => ({
+        const transformMenu = (items: any): MenuItem[] =>
+          items.map((item: any) => ({
             img: iconMap[item.ScreenName] || account,
             label: item.ScreenName,
             href:
               screenRouteMap[item.ScreenName] ||
-              `/${item.ScreenName.toLowerCase().replace(/\s+/g, "-")}`,
+              `/admin/${item.ScreenName.toLowerCase().replace(/\s+/g, "-")}`,
             subroutes: item.ScreenNameData
               ? transformMenu(item.ScreenNameData)
               : undefined,
@@ -109,7 +109,7 @@ export function Sidebar() {
           {
             img: dashbordIcon,
             label: "Dashboard",
-            href: "/",
+            href: "/admin/dashboard",
           },
           ...transformed,
         ]);
@@ -139,7 +139,7 @@ export function Sidebar() {
                 "absolute left-[-16px] w-[16px] border-l-2 border-b-2 h-[24px] border-gray-300",
                 (currentPath === subroute.href ||
                   subroute.subroutes?.some((sr) => currentPath === sr.href)) &&
-                  "border-[#0DAFDC]"
+                "border-[#0DAFDC]"
               )}
             />
 
@@ -153,7 +153,7 @@ export function Sidebar() {
                 isActive && "text-[#0DAFDC] bg-[#0DAFDC10]"
               )}
             >
-              <Link to={subroute.href} className="flex items-center gap-2 w-full">
+              <Link to={`${subroute.href}`} className="flex items-center gap-2 w-full">
                 <span>{subroute.label}</span>
               </Link>
               {subroute.subroutes &&
@@ -199,9 +199,9 @@ export function Sidebar() {
                   className={cn(
                     "flex items-center justify-between cursor-pointer px-3 py-2 rounded-md",
                     !isActive &&
-                      "hover:bg-gray-300 text-sidebar-foreground transition-colors duration-200",
+                    "hover:bg-gray-300 text-sidebar-foreground transition-colors duration-200",
                     isActive &&
-                      "bg-[linear-gradient(90deg,#0DAFDC_0%,#22E9A2_100%)] text-white"
+                    "bg-[linear-gradient(90deg,#0DAFDC_0%,#22E9A2_100%)] text-white"
                   )}
                 >
                   <Link

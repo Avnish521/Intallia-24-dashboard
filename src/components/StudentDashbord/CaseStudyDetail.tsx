@@ -1,4 +1,3 @@
-import React from "react";
 import { Header } from "@/components/login/Header";
 import Image from "@/assets/image-shop.svg";
 import { Button } from "@/components/ui/button";
@@ -6,18 +5,22 @@ import AvatarCS from "@/assets/avatar_cs.svg?react";
 import Pot from "@/assets/pot.svg?react";
 import Laptop from "@/assets/laptop.svg?react";
 import Avatar2 from "@/assets/avatar2.svg?react";
-
+import { useParams } from "react-router-dom";
+import { caseStudies } from "@/data/caseStudy";
 
 const CaseStudyDetail = () => {
+  const { id } = useParams<{ id: string }>();
+  const caseStudy = caseStudies.find((study) => study.id === Number(id));
+
   return (
     <>
       <Header />
-      <div className="py-10 px-20 w-full">
+      <div className="py-10 px-20 w-full container mx-auto max-w-[1650px]">
         <div className="relative">
-          <img src={Image} alt=""/>
+          <img src={caseStudy?.backgroundImage} alt="" className="w-full" />
           <div className="bg-white w-[60%] p-5 absolute rounded-lg shadow-md -bottom-2">
             <h3 className="w-[855px] font-plusJakarta leading-[41px] pb-5 font-semibold tracking-[0.37px] text-4xl text-[#242426]">
-              Create a Sales Dashboard for Meesho’s E-commerce Category Manager
+              {caseStudy?.title}
             </h3>
             <Button className=".btn w-[145px] h-[50px] text-lg font-medium font-plusJakarta">
               Start Now

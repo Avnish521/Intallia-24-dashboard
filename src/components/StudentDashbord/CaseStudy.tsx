@@ -4,7 +4,7 @@ import { Header } from "@/components/login/Header";
 import { Sidebar } from "./Sidebar";
 import { CaseStudyGrid } from "./CaseStudyGrid";
 
-export const Dashboard: React.FC = () => {
+const CaseStudy: React.FC = () => {
   return (
     <div className="bg-[#F9F9F9] flex flex-col min-h-screen">
       <Header />
@@ -18,3 +18,5 @@ export const Dashboard: React.FC = () => {
     </div>
   );
 };
+
+export default CaseStudy;

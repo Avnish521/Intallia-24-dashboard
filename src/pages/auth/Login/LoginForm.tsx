@@ -33,7 +33,7 @@ const LoginForm = () => {
   try {
     await login(data.userid, data.password);
     reset();
-    console.log("Login successful!");
+    //console.log("Login successful!");
     navigate("/"); // ✅ Redirect here
   } catch (err) {
     console.error("Login failed:", err);

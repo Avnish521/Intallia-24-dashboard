@@ -1,15 +1,16 @@
 import RouteGuard from "./routeGuard";
 import { ReactNode } from "react";
 
-const ProtectedRoute = ({
+const PublicRoute = ({
   children,
-  allowedRoles,
+  redirectTo = "/",
 }: {
   children: ReactNode;
-  allowedRoles?: string[];
+  redirectTo?: string;
 }) => (
-  <RouteGuard requireAuth allowedRoles={allowedRoles}>
+  <RouteGuard requireGuest redirectTo={redirectTo}>
     {children}
   </RouteGuard>
 );
-export default ProtectedRoute;
+
+export default PublicRoute;

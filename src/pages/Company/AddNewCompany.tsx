@@ -8,6 +8,7 @@ import { FormRef } from "@/types";
 
 const AddNewCompany: React.FC = () => {
   const { companyId } = useParams<{ companyId?: string }>();
+  console.log("Company ID:", companyId);
   const companyFormRef = useRef<FormRef>(null);
   const deleteCompanyMutation = useDeleteCompany();
 
