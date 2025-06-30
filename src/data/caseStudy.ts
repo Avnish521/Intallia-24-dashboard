@@ -1,8 +1,4 @@
-
-import React from "react";
-import { CaseStudyCard } from "./CaseStudyCard";
-
-const caseStudies = [
+export const caseStudies = [
   {
     icon: "https://cdn.builder.io/api/v1/image/assets/d6885eedf052436eac8c331fe6a68cb8/62a0fd16e70fbcd2b4be07767ea671dd45e6e6aa?placeholderIfAbsent=true",
     title: "Create a Sales Dashboard for Meesho's E-commerce Category Manager",
@@ -66,17 +62,3 @@ const caseStudies = [
     //   "https://cdn.builder.io/api/v1/image/assets/d6885eedf052436eac8c331fe6a68cb8/3ceda57ff02e3e5be7b6f569f0c3bf023cfb0437?placeholderIfAbsent=true",
   },
 ];
-
-export const CaseStudyGrid: React.FC = () => {
-  return (
-    <main className="flex-1 py-10 lg:py-12 ">
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {caseStudies.map((study, index) => (
-          <div key={index} className="h-full">
-            <CaseStudyCard {...study} />
-          </div>
-        ))}
-      </div>
-    </main>
-  );
-};

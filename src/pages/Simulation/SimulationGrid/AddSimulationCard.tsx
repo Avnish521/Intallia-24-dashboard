@@ -1,12 +1,15 @@
-import React from "react";
+import { PATH, BASE_TEXT } from "@/constants";
+import { useCallback } from "react";
 import { useNavigate } from "react-router-dom";
+
+
 
 export const AddSimulationCard: React.FC = () => {
   const navigate = useNavigate();
 
-  const handleClick = () => {
-    navigate("/simulation/new-simulation");
-  };
+  const handleClick = useCallback(() => {
+    navigate(PATH.SIMULATION_ADD);
+  }, [navigate]);
 
   return (
     <button
@@ -31,7 +34,7 @@ export const AddSimulationCard: React.FC = () => {
           />
         </svg>
       </div>
-      <div className="mt-8">Add a New Simulation</div>
+      <div className="mt-8">{BASE_TEXT.ADD_NEW_SIMULATION}</div>
     </button>
   );
 };

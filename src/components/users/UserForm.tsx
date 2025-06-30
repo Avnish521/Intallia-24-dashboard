@@ -1,16 +1,13 @@
 import { forwardRef, useEffect, useImperativeHandle } from "react";
 import { useForm } from "react-hook-form";
-import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { EducationSection } from "./EducationSection";
 import { ExperienceSection } from "./ExperienceSection";
 import { useUserById } from "@/queries/userQueries";
-import { FormRef } from "@/types";
-import { experienceSchema, UserSchema as userSchema } from "@/schema/userSchema";
+import { FormRef, User } from "@/types";
+import { UserFormValues, userSchema } from "@/schema/userSchema";
 
-type UserFormValues = z.infer<typeof userSchema>;
-
-const mapuserDataToForm = (data: any) => ({
+const mapuserDataToForm = (data: User): UserFormValues => ({
   firstName: data?.FirstName || "",
   lastName: data?.LastName || "",
   email: data?.Email || "",
@@ -20,7 +17,7 @@ const mapuserDataToForm = (data: any) => ({
   company: "", // Default or map from data if available
   address: data?.Address || "",
   education: data?.Education || [],
-  experience: data?.Experience || []
+  experiences: data?.Experience || []
 });
 
 interface UserFormProps {
@@ -37,7 +34,6 @@ export const UserForm = forwardRef<FormRef, UserFormProps>(
       register,
       handleSubmit,
       setValue,
-      watch,
       formState: { errors },
     } = useForm<UserFormValues>({
       resolver: zodResolver(userSchema),
@@ -181,7 +177,7 @@ export const UserForm = forwardRef<FormRef, UserFormProps>(
                     <input
                       {...register("number")}
                       type="tel"
-                      placeholder="12344568"
+                      placeholder=""
                       className="w-full outline-none placeholder:pl-4 placeholder:text-black"
                     />
                   </div>

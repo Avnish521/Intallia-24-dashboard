@@ -6,7 +6,7 @@ import { useParams } from "react-router-dom";
 import { useDeleteUser } from "@/queries/userQueries";
 import { FormRef } from "@/types";
 
-export const AddNewUser: React.FC = () => {
+const AddNewUser: React.FC = () => {
   const { userId } = useParams();
   console.log("User ID:", userId);
 
@@ -75,3 +75,5 @@ export const AddNewUser: React.FC = () => {
     </MainLayout>
   );
 };
+
+export default AddNewUser;

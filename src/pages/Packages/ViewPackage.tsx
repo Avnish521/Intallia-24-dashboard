@@ -2,7 +2,7 @@ import React from "react";
 import { MainLayout } from "@/layout/MainLayout";
 import SidebarActions from "@/components/users/SidebarActions";
 
-export const ViewPackage: React.FC = () => {
+const ViewPackage: React.FC = () => {
   const handleAddNewPackage = () => {
     console.log("Add New Company clicked");
   };
@@ -174,3 +174,5 @@ export const ViewPackage: React.FC = () => {
     </MainLayout>
   );
 };
+
+export default ViewPackage;

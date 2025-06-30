@@ -7,6 +7,7 @@ import { deleteCompany } from "@/http/api";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { useDeleteCompany } from "@/queries/companyQueries";
+import { PATH } from "@/constants";
 
 const tableColumns: Column<Company>[] = [
   {
@@ -42,7 +43,7 @@ const tableColumns: Column<Company>[] = [
     render: (company) => {
       const status = company.Status
         ? company.Status.charAt(0).toUpperCase() +
-          company.Status.slice(1).toLowerCase()
+        company.Status.slice(1).toLowerCase()
         : "";
       return (
         <Badge
@@ -51,8 +52,8 @@ const tableColumns: Column<Company>[] = [
             status === "Active"
               ? "bg-[#ECFDF3] text-[#23C16B]"
               : status === "Inactive"
-              ? "bg-[#FEF3F2] text-[#FF3A3A]"
-              : ""
+                ? "bg-[#FEF3F2] text-[#FF3A3A]"
+                : ""
           }
         >
           {status}
@@ -75,20 +76,19 @@ const tableColumns: Column<Company>[] = [
 ];
 
 interface CTableProps {
-  searchQuery: string;
   companies: Company[];
 }
 
-export const CTable = ({ searchQuery, companies }: CTableProps) => {
+export const CTable = ({ companies }: CTableProps) => {
   const navigate = useNavigate();
-  const queryClient = useQueryClient();
+  // const queryClient = useQueryClient();
 
   const handleEdit = (companyId: string | number) => {
     if (!companyId) {
       toast.error("CompanyId is undefined");
       return;
     }
-    navigate(`/company/${companyId}`);
+    navigate(`${PATH.COMPANY_EDIT}/${companyId}`);
   };
 
   const deleteCompanyMutation = useDeleteCompany();

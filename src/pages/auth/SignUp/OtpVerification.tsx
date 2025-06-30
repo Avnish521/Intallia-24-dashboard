@@ -1,30 +1,25 @@
 import React, { useRef, useState } from "react";
 import { useForm, Controller } from "react-hook-form";
-import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
-// import {  } from "@/assets/Vector.svg";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import Image from "@/assets/Vector.svg";
 import Vector from "@/assets/Vector (1).svg";
 import Vectorimg from "@/assets/Vector (2).svg";
 import Vectorimgr from "@/assets/Vector (3).svg";
+import { otpSchema, OtpFormValues } from "@/schema/authSchema";
+import { useNavigate } from "react-router-dom";
+import { PATH, STORAGE_KEY } from "@/constants";
+import { getUserData } from "@/utils";
 
-// Zod schema for OTP validation
-const otpSchema = z.object({
-  otp: z
-    .string()
-    .length(6, "OTP must be exactly 6 digits")
-    .regex(/^\d+$/, "OTP must contain only numbers"),
-});
-
-type OtpFormValues = z.infer<typeof otpSchema>;
-
-const Verify = () => {
+const OtpVerification = () => {
   const [isShowDialog, setIsShowDialog] = useState(false);
   const inputRefs = useRef<HTMLInputElement[]>([]);
+  const navigate = useNavigate();
+  const { UserId } = getUserData(STORAGE_KEY);
+
+  // Initialize the form with react-hook-form
   const {
     control,
     handleSubmit,
@@ -38,6 +33,7 @@ const Verify = () => {
     },
   });
 
+  // Handle input change for OTP fields
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement>,
     index: number,
@@ -56,6 +52,7 @@ const Verify = () => {
     }
   };
 
+  // Handle form submission
   const onSubmit = (data: OtpFormValues) => {
     console.log("OTP Submitted:", data.otp);
     // Add API call or further logic here
@@ -128,7 +125,10 @@ const Verify = () => {
       </div>
       {isShowDialog && (
         <Dialog open={isShowDialog} onOpenChange={setIsShowDialog}>
-          <DialogContent className="sm:max-w-[425px] ">
+          <DialogContent
+            className="sm:max-w-[425px] "
+            onClose={() => navigate(`${PATH.USER_DETAILS}${UserId}`)}
+          >
             <div className="flex justify-center items-center py-4 ">
               <img src={Image} alt="" className="relative" />
               <img
@@ -160,4 +160,4 @@ const Verify = () => {
   );
 };
 
-export default Verify;
+export default OtpVerification;

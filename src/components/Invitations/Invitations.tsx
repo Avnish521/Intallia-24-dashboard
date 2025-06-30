@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom";
 import InvitationsTable from "./InvitationsTable";
 import { PInvitations } from "@/data/invitations"; // Import invitations data
 
-export const Invitations = () => {
+const Invitations = () => {
   const navigate = useNavigate();
 
   const [currentPage, setCurrentPage] = useState(1);
@@ -47,3 +47,4 @@ export const Invitations = () => {
   );
 };
 
+export default Invitations;

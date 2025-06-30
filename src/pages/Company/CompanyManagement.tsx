@@ -1,4 +1,3 @@
-import { ActionButton } from "@/components/common/ActionButton";
 import Pagination from "@/components/common/Pagination";
 import { MainLayout } from "@/layout/MainLayout";
 import { CTable } from "@/pages/Company/CTable";
@@ -7,7 +6,8 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Company } from "@/types";
 import { useCompanies } from "@/queries/companyQueries";
-import { exportToExcel, exportToPDF } from "@/utils";
+import { exportToExcel, exportToPDF, getPaginatedData } from "@/utils";
+import { BASE_TEXT, PATH } from "@/constants";
 
 const CompanyManagement = () => {
   const navigate = useNavigate();
@@ -30,13 +30,12 @@ const CompanyManagement = () => {
     }) || [];
 
   const rowPerPage = 8;
-  const totalPages = Math.ceil(filteredCompanies.length / rowPerPage);
-  const startIndex = (currentPage - 1) * rowPerPage;
-  const endIndex = startIndex + rowPerPage;
 
-  const displayedCompanies: Company[] = filteredCompanies.slice(
-    startIndex,
-    endIndex,
+    // Get paginated data
+    const { displayedItems: displayedCompanies, startIndex, endIndex, totalPages } = getPaginatedData(
+      filteredCompanies,
+      currentPage,
+      rowPerPage
   );
 
   const headers = [
@@ -69,8 +68,8 @@ const CompanyManagement = () => {
               onSearch={setSearchQuery}
               exportInExcel={() => exportToExcel(headers, body, "companies")}
               handleDownload={() => exportToPDF(headers, body, "companies")}
-              buttonLink={() => navigate("/company/add-new-company")}
-              buttonLabel="Add New Company"
+              buttonLink={() => navigate(PATH.COMPANY_ADD)}
+              buttonLabel={BASE_TEXT.ADD_NEW_COMPANY}
             />
             <div className="bg-white p-6 rounded-lg">
               {isLoading && <div>Loading...</div>}
@@ -78,7 +77,6 @@ const CompanyManagement = () => {
               {!isLoading && !isError && (
                 <>
                   <CTable
-                    searchQuery={searchQuery}
                     companies={displayedCompanies}
                   />
                   <Pagination

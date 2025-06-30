@@ -30,7 +30,7 @@ const defaultValues: PackageFormValues = {
   createdBy: "",
 };
 
-export const AddNewPackage: React.FC<{
+const AddNewPackage: React.FC<{
   editData?: Partial<PackageFormValues>;
 }> = ({ editData }) => {
   const { id: packageId } = useParams();
@@ -269,3 +269,5 @@ export const AddNewPackage: React.FC<{
     </MainLayout>
   );
 };
+
+export default AddNewPackage;

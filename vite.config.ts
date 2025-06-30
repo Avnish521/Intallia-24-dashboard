@@ -1,9 +1,11 @@
 import { defineConfig } from "vite";
 import path from "path";
+import svgr from "vite-plugin-svgr";
 
 // https://vitejs.dev/config/
 export default defineConfig(() => ({
   base: "./",
+  plugins: [svgr()], // Enable SVG imports as React components
   server: {
     host: "::",
     port: 8080,

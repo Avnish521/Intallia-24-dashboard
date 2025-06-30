@@ -6,12 +6,21 @@ import { User } from "@/types/index";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
 import { useDeleteUser } from "@/queries/userQueries";
+import { PATH } from "@/constants";
 
 const userColumns: Column<User>[] = [
   { key: "userID", header: "User ID", render: (user) => user.UserId },
-  { key: "name", header: "Name", render: (user) => user.FirstName + " " + user.LastName },
+  {
+    key: "name",
+    header: "Name",
+    render: (user) => user.FirstName + " " + user.LastName,
+  },
   { key: "email", header: "Email", render: (user) => user.Email },
-  { key: "phone", header: "Phone Number", render: (user) => user.ContactNumber },
+  {
+    key: "phone",
+    header: "Phone Number",
+    render: (user) => user.ContactNumber,
+  },
   { key: "address", header: "Address", render: (user) => user.Address },
 ];
 
@@ -31,7 +40,7 @@ export const UserTable = ({ users = [] }: UserTableProps) => {
       toast.error("UserId is undefined");
       return;
     }
-    navigate(`/user/${userId}`);
+    navigate(`${PATH.USER}/${userId}`);
   };
 
   const handleDelete = (userId: string | number) => {
@@ -66,4 +75,3 @@ export const UserTable = ({ users = [] }: UserTableProps) => {
     />
   );
 };
-

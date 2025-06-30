@@ -14,7 +14,7 @@ export const SimulationCard: React.FC<Simulation> = ({
   const navigate = useNavigate();
 
   const handleClick = () => {
-    navigate(`/simulation/${id}`);
+    navigate(`/admin/simulation/${id}`);
   };
 
   return (

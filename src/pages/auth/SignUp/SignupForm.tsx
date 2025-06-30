@@ -1,29 +1,10 @@
-import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import Image from "@/assets/indiaflag.svg";
-
-const signupSchema = z
-  .object({
-    fullName: z.string().min(1, "Full Name is required"),
-    email: z.string().email("Invalid email address"),
-    contactNumber: z
-      .string()
-      .regex(/^\d{10}$/, "Contact Number must be 10 digits"),
-    password: z.string().min(6, "Password must be at least 6 characters"),
-    confirmPassword: z
-      .string()
-      .min(6, "Confirm Password must be at least 6 characters"),
-  })
-  .refine((data) => data.password === data.confirmPassword, {
-    message: "Passwords do not match",
-    path: ["confirmPassword"],
-  });
-
-type SignupFormValues = z.infer<typeof signupSchema>;
+import { signupSchema, SignupFormValues } from "@/schema/authSchema";
 
 const SignupForm = ({
   onSubmit,
@@ -48,22 +29,32 @@ const SignupForm = ({
         </p>
 
         <form className="space-y-4" onSubmit={handleSubmit(onSubmit)}>
-          {/* Full Name */}
-          <div>
-            <Label htmlFor="fullName">
-              Full Name<span className="text-red-500 text-sm">*</span>
-            </Label>
-            <Input
-              id="fullName"
-              type="text"
-              placeholder="Enter Name"
-              {...register("fullName")}
-            />
-            {errors.fullName && (
-              <p className="text-red-500 text-sm">{errors.fullName.message}</p>
-            )}
+          <div className="flex flex-wrap items-center gap-6">
+            <div className="w-full md:w-[47%]">
+              <Label htmlFor="fullName">
+                First Name<span className="text-red-500 text-sm">*</span>
+              </Label>
+              <Input
+                id="firstName"
+                type="text"
+                placeholder="Enter Name"
+                {...register("firstName")}
+                error={errors.firstName?.message}
+              />
+            </div>
+            <div className="w-full md:w-[47%]">
+              <Label htmlFor="lastName">
+                Last Name<span className="text-red-500 text-sm">*</span>
+              </Label>
+              <Input
+                id="lastName"
+                type="text"
+                placeholder="Enter Name"
+                {...register("lastName")}
+                error={errors.lastName?.message}
+              />
+            </div>
           </div>
-
           {/* Email */}
           <div>
             <Label htmlFor="email">
@@ -74,10 +65,8 @@ const SignupForm = ({
               type="email"
               placeholder="Enter Email"
               {...register("email")}
+              error={errors.email?.message}
             />
-            {errors.email && (
-              <p className="text-red-500 text-sm">{errors.email.message}</p>
-            )}
           </div>
 
           {/* Contact Number */}
@@ -98,7 +87,7 @@ const SignupForm = ({
               />
             </div>
             {errors.contactNumber && (
-              <p className="text-red-500 text-sm">
+              <p className="mt-1 text-sm text-destructive">
                 {errors.contactNumber.message}
               </p>
             )}
@@ -114,10 +103,8 @@ const SignupForm = ({
               type="password"
               placeholder="*******"
               {...register("password")}
+              error={errors.password?.message}
             />
-            {errors.password && (
-              <p className="text-red-500 text-sm">{errors.password.message}</p>
-            )}
           </div>
 
           {/* Confirm Password */}
@@ -130,12 +117,8 @@ const SignupForm = ({
               type="password"
               placeholder="*******"
               {...register("confirmPassword")}
+              error={errors.confirmPassword?.message}
             />
-            {errors.confirmPassword && (
-              <p className="text-red-500 text-sm">
-                {errors.confirmPassword.message}
-              </p>
-            )}
           </div>
 
           {/* Sign Up Button */}

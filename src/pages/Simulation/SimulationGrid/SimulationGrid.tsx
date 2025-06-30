@@ -3,25 +3,11 @@ import { SimulationCard } from "./SimulationCard";
 import { AddSimulationCard } from "./AddSimulationCard";
 import { useJobSimulation } from "@/queries/simulationQueries";
 
-// const simulationData = Array(14)
-//   .fill(null)
-//   .map((_, index) => ({
-//     id: index + 1,
-//     title: "Microsoft Excel",
-//     description: "Lorem ipsum dolor sit amet consectetur.",
-//     createdDate: "14 Jan 2024",
-//     isGuided: true,
-//     isPaid: true,
-//   }));
+
 
 export const SimulationGrid: React.FC = () => {
   // Get the simulation data
-  const {
-    data: Simulation,
-    isLoading,
-    isError,
-    isSuccess,
-  } = useJobSimulation();
+  const { data: Simulation } = useJobSimulation();
   console.log("Simulation:", Simulation);
 
   const cardsPerRow = 5;

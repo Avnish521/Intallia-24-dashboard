@@ -1,4 +1,3 @@
-import React from "react";
 import { Header } from "@/components/InnerPage/layout/Header";
 import { ArticleContent } from "@/components/InnerPage/article/ArticleContent";
 import { CallToAction } from "@/components/InnerPage/cta/CallToAction";
