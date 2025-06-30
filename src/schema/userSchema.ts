@@ -17,7 +17,7 @@ export const experienceSchema = z.object({
 });
 
 // User Schema
-export const UserSchema = z.object({
+export const userSchema = z.object({
   firstName: z.string().min(1, { message: "First name is required" }),
   lastName: z.string().min(1, { message: "Last name is required" }),
   email: z.string().email({ message: "Invalid email" }),
@@ -29,3 +29,5 @@ export const UserSchema = z.object({
   education: z.array(educationSchema),
   experiences: z.array(experienceSchema),
 });
+
+export type UserFormValues = z.infer<typeof userSchema>;
