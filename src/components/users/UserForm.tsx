@@ -28,7 +28,6 @@ export const UserForm = forwardRef<FormRef, UserFormProps>(
   ({ userId }, ref) => {
     const { data: users, isFetched } = useUserById(userId);
     const userData = users?.UserProfile[0];
-    console.log("Current user:", userData);
 
     const {
       register,
@@ -38,8 +37,7 @@ export const UserForm = forwardRef<FormRef, UserFormProps>(
     } = useForm<UserFormValues>({
       resolver: zodResolver(userSchema),
     });
-    // const value = watch();
-    // console.log("Form Data", value);
+    
     // Expose submit method with mode to parent
     useImperativeHandle(ref, () => ({
       submit: (mode) => handleSubmit((formData) => onSubmit(formData, mode))(),

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { MainLayout } from "@/layout/MainLayout";
 import { UserTable } from "@/components/users/UserTable";
@@ -10,50 +10,66 @@ import { User } from "@/types";
 import { BASE_TEXT, PATH } from "@/constants";
 
 const USERS_PER_PAGE = 8;
-const EXPORT_COLUMNS = [
-  "UserId",
-  "Name",
-  "Email",
-  "ContactNumber",
-  "Address",
-] as const;
+const EXPORT_COLUMNS = ["UserId", "Name", "Email", "Phone", "Address"] as const;
 
 const UserManagement = () => {
   const navigate = useNavigate();
   const { data: usersResponse } = useUser();
-
   const lookupData = usersResponse?.LookupData ?? [];
 
-  const [currentPage, setCurrentPage] = useState<number>(1);
-  const [searchQuery, setSearchQuery] = useState<string>("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [searchQuery, setSearchQuery] = useState("");
 
   // Filter users by search query
-  const filteredUsers: User[] = lookupData.filter((user: User) => {
+  const filteredUsers = useMemo(() => {
     const searchStr = searchQuery.toLowerCase();
-    return (
-      user.FirstName?.toLowerCase().includes(searchStr) ||
-      user.LastName?.toLowerCase().includes(searchStr) ||
-      user.Email?.toLowerCase().includes(searchStr) ||
-      user.ContactNumber?.toLowerCase().includes(searchStr) ||
-      user.Address?.toLowerCase().includes(searchStr) ||
-      user.UserId?.toLowerCase().includes(searchStr)
+    return lookupData.filter((user: User) =>
+      [
+        user.FirstName,
+        user.LastName,
+        user.Email,
+        user.ContactNumber,
+        user.Address,
+        user.UserId,
+      ]
+        .map((field) => field?.toLowerCase() ?? "")
+        .some((field) => field.includes(searchStr)),
     );
-  });
+  }, [lookupData, searchQuery]);
 
   // Get paginated data
-  const { displayedItems: displayedUsers, startIndex, endIndex, totalPages } = getPaginatedData(
-    filteredUsers,
-    currentPage,
-    USERS_PER_PAGE
+  const {
+    displayedItems: displayedUsers,
+    startIndex,
+    endIndex,
+    totalPages,
+  } = useMemo(
+    () => getPaginatedData(filteredUsers, currentPage, USERS_PER_PAGE) as {
+      displayedItems: User[];
+      startIndex: number;
+      endIndex: number;
+      totalPages: number;
+    },
+    [filteredUsers, currentPage],
   );
 
-  const exportBody = filteredUsers.map((user: User) => ({
-    UserId: user.UserId ?? "",
-    Name: `${user.FirstName ?? ""} ${user.LastName ?? ""}`.trim(),
-    Email: user.Email ?? "",
-    Phone: user.ContactNumber ?? "",
-    Address: user.Address ?? "",
-  }));
+  const exportBody = useMemo(
+    () =>
+      filteredUsers.map((user: User) => ({
+        UserId: user.UserId ?? "",
+        Name: `${user.FirstName ?? ""} ${user.LastName ?? ""}`.trim(),
+        Email: user.Email ?? "",
+        Phone: user.ContactNumber ?? "",
+        Address: user.Address ?? "",
+      })),
+    [filteredUsers],
+  );
+
+  const handleExportPDF = () =>
+    exportToPDF(EXPORT_COLUMNS, exportBody, "UserList");
+  const handleExportExcel = () =>
+    exportToExcel(EXPORT_COLUMNS, exportBody, "UserList");
+  const handleAddUser = () => navigate(PATH.USER_ADD);
 
   return (
     <MainLayout>
@@ -66,14 +82,10 @@ const UserManagement = () => {
 
             <UserTableActions
               onSearch={setSearchQuery}
-              handleDownload={() =>
-                exportToPDF(EXPORT_COLUMNS, exportBody, "UserList")
-              }
-              exportInExcel={() =>
-                exportToExcel(EXPORT_COLUMNS, exportBody, "UserList")
-              }
-              buttonLink={() => navigate("/user/add-new-user")}
-              buttonLabel="Add New User"
+              handleDownload={handleExportPDF}
+              exportInExcel={handleExportExcel}
+              buttonLink={handleAddUser}
+              buttonLabel={BASE_TEXT.ADD_NEW_USER}
             />
 
             <div className="bg-white p-6 rounded-lg">
