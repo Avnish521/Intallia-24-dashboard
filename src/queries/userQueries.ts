@@ -4,7 +4,7 @@ import {
   getUserProfileById,
   addUser,
 } from "@/http/api.js";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient, UseQueryResult } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 
@@ -64,7 +64,7 @@ export function useDeleteUser() {
 /**
  * Custom hook to fetch a single user by ID.
  */
-export function useUserById(userId?: string | number) {
+export function useUserById(userId?: string | number): UseQueryResult<any, unknown> {
   return useQuery({
     queryKey: ["user", userId],
     queryFn: () =>

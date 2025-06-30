@@ -1,7 +1,4 @@
 import React, { useRef } from "react";
-
-import { SearchBar } from "../common/SearchBar";
-import { ActionButton } from "../common/ActionButton";
 import { UserForm } from "./UserForm";
 import { MainLayout } from "../../layout/MainLayout";
 import SidebarActions from "./SidebarActions";

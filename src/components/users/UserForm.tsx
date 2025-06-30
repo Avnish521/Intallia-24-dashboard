@@ -1,4 +1,4 @@
-import React, { forwardRef, useEffect, useImperativeHandle } from "react";
+import { forwardRef, useEffect, useImperativeHandle } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -6,31 +6,23 @@ import { EducationSection } from "./EducationSection";
 import { ExperienceSection } from "./ExperienceSection";
 import { useUserById } from "@/queries/userQueries";
 import { FormRef } from "@/types";
-
-// 1. Define Zod schema
-const userSchema = z.object({
-  firstName: z.string().min(1, "First name is required"),
-  lastName: z.string().min(1, "Last name is required"),
-  email: z.string().email("Invalid email"),
-  number: z.string().min(10, "Number is required"),
-  linkedin: z.string().url("Invalid URL"),
-  dob: z.string().min(1, "DOB is required"),
-  company: z.string().min(1, "Company name is required"),
-  address: z.string().min(1, "Address is required"),
-});
+import { experienceSchema, UserSchema as userSchema } from "@/schema/userSchema";
 
 type UserFormValues = z.infer<typeof userSchema>;
 
-const mapuserDataToForm = (data): UserFormValues => ({
+const mapuserDataToForm = (data: any) => ({
   firstName: data?.FirstName || "",
   lastName: data?.LastName || "",
   email: data?.Email || "",
   number: data?.ContactNumber || "",
   linkedin: data?.LinkedInURL || "",
-  dob: data?.ProfessionalSummary || "",
-  //company: data?.company || "",
+  dob: "", // Default or map from data if available
+  company: "", // Default or map from data if available
   address: data?.Address || "",
+  education: data?.Education || [],
+  experience: data?.Experience || []
 });
+
 interface UserFormProps {
   userId?: string;
 }
@@ -39,26 +31,19 @@ export const UserForm = forwardRef<FormRef, UserFormProps>(
   ({ userId }, ref) => {
     const { data: users, isFetched } = useUserById(userId);
     const userData = users?.UserProfile[0];
+    console.log("Current user:", userData);
 
     const {
       register,
       handleSubmit,
       setValue,
+      watch,
       formState: { errors },
     } = useForm<UserFormValues>({
       resolver: zodResolver(userSchema),
-      defaultValues: {
-        firstName: "",
-        lastName: "",
-        email: "",
-        number: "",
-        linkedin: "",
-        dob: "",
-        company: "",
-        address: "",
-      },
     });
-
+    // const value = watch();
+    // console.log("Form Data", value);
     // Expose submit method with mode to parent
     useImperativeHandle(ref, () => ({
       submit: (mode) => handleSubmit((formData) => onSubmit(formData, mode))(),
@@ -68,7 +53,9 @@ export const UserForm = forwardRef<FormRef, UserFormProps>(
     const addNewUser = (
       formData: UserFormValues,
       mode: "save" | "saveAndExit",
-    ) => {};
+    ) => {
+      console.log("Added New user:", formData);
+    };
 
     // Update New User
     const handleUpdateUser = (
@@ -88,8 +75,6 @@ export const UserForm = forwardRef<FormRef, UserFormProps>(
       }
     };
 
-    //  from me data ko set kare ke liye taki data from me aa sake //
-
     useEffect(() => {
       if (userData) {
         const values = mapuserDataToForm(userData);
@@ -105,7 +90,7 @@ export const UserForm = forwardRef<FormRef, UserFormProps>(
         noValidate
       >
         <div className="w-full">
-          <section>
+          <div>
             <h2 className="text-xl font-medium tracking-[0.38px] bg-clip-text bg-[linear-gradient(90deg,#0DAFDC_0%,#22E9A2_100%)] text-transparent ">
               Personal Details
             </h2>
@@ -289,27 +274,9 @@ export const UserForm = forwardRef<FormRef, UserFormProps>(
                 </span>
               )}
             </div>
-          </section>
-          <EducationSection onAdd={() => console.log("Add education")} />
-          <ExperienceSection onAdd={() => console.log("Add experience")} />
-          {/* Buttons yahan add karein */}
-          <div className="flex gap-4 mt-6">
-            <button
-              type="button"
-              className="px-6 py-3 bg-blue-500 text-white rounded"
-              onClick={handleSubmit((data) => onSubmit(data, "save"))}
-            >
-              Save
-            </button>
-            <button
-              type="button"
-              className="px-6 py-3 bg-green-500 text-white rounded"
-              onClick={handleSubmit((data) => onSubmit(data, "saveAndExit"))}
-            >
-              Save & Exit
-            </button>
+            <EducationSection register={register} errors={errors} />
+            <ExperienceSection register={register} errors={errors} />
           </div>
-          // ...existing code...
         </div>
       </form>
     );

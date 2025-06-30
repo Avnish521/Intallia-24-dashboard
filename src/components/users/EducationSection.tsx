@@ -4,26 +4,27 @@ import { cn } from "@/lib/utils";
 
 interface Education {
   id: string;
-  school: string;
   collapsed?: boolean;
 }
 
 interface EducationSectionProps {
-  onAdd: () => void;
+  register: any;
+  errors: any;
 }
 
 export const EducationSection: React.FC<EducationSectionProps> = ({
-  onAdd,
+  register,
+  errors,
 }) => {
   const [educations, setEducations] = useState<Education[]>([
-    { id: "1", school: "Education 1" },
+    { id: "1" },
   ]);
 
   const handleAdd = () => {
     const newId = (educations.length + 1).toString();
     setEducations([
       ...educations,
-      { id: newId, school: `Education ${educations.length + 1}` },
+      { id: newId },
     ]);
   };
 
@@ -46,14 +47,14 @@ export const EducationSection: React.FC<EducationSectionProps> = ({
       </h2>
 
       <div className="w-full mt-5 space-y-2.5">
-        {educations.map((education) => (
+        {educations.map((education, idx) => (
           <div
             key={education.id}
             className="rounded bg-white w-full p-4 border-2 border-[#F2F2F7]"
           >
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <button onClick={() => toggleCollapse(education.id)}>
+                <button type="button" onClick={() => toggleCollapse(education.id)}>
                   <ChevronDown
                     className={cn(
                       "w-6 h-6 transition-transform",
@@ -62,10 +63,10 @@ export const EducationSection: React.FC<EducationSectionProps> = ({
                   />
                 </button>
                 <h3 className="text-[15px] font-semibold text-black tracking-[-0.24px]">
-                  {education.school}
+                  Education {idx + 1}
                 </h3>
               </div>
-              <button onClick={() => handleDelete(education.id)}>
+              <button type="button" onClick={() => handleDelete(education.id)}>
                 <X className="w-6 h-6" />
               </button>
             </div>
@@ -82,8 +83,12 @@ export const EducationSection: React.FC<EducationSectionProps> = ({
                   <input
                     type="text"
                     placeholder="Enter degree"
-                    className="rounded border border-[#E5E5EA] bg-white min-h-12 px-4 py-3.5"
+                    className={`rounded border border-[#E5E5EA] bg-white min-h-12 px-4 py-3.5 ${errors?.education?.[idx]?.degree ? "border-red-500" : ""}`}
+                    {...register(`education.${idx}.degree`, { required: true })}
                   />
+                  {errors?.education?.[idx]?.degree && (
+                    <span className="text-xs text-red-500">Degree is required</span>
+                  )}
                 </div>
 
                 <div className="flex flex-col gap-2">
@@ -96,8 +101,12 @@ export const EducationSection: React.FC<EducationSectionProps> = ({
                   <input
                     type="text"
                     placeholder="Enter college"
-                    className="rounded border border-[#E5E5EA] bg-white min-h-12 px-4 py-3.5"
+                    className={`rounded border border-[#E5E5EA] bg-white min-h-12 px-4 py-3.5 ${errors?.education?.[idx]?.college ? "border-red-500" : ""}`}
+                    {...register(`education.${idx}.college`, { required: true })}
                   />
+                  {errors?.education?.[idx]?.college && (
+                    <span className="text-xs text-red-500">College is required</span>
+                  )}
                 </div>
 
                 <div className="flex flex-col gap-2">
@@ -109,8 +118,12 @@ export const EducationSection: React.FC<EducationSectionProps> = ({
                   </label>
                   <input
                     type="date"
-                    className="rounded border border-[#E5E5EA] bg-white min-h-12 px-4 py-3.5"
+                    className={`rounded border border-[#E5E5EA] bg-white min-h-12 px-4 py-3.5 ${errors?.education?.[idx]?.startDate ? "border-red-500" : ""}`}
+                    {...register(`education.${idx}.startDate`, { required: true })}
                   />
+                  {errors?.education?.[idx]?.startDate && (
+                    <span className="text-xs text-red-500">Start date is required</span>
+                  )}
                 </div>
 
                 <div className="flex flex-col gap-2">
@@ -122,8 +135,12 @@ export const EducationSection: React.FC<EducationSectionProps> = ({
                   </label>
                   <input
                     type="date"
-                    className="rounded border border-[#E5E5EA] bg-white min-h-12 px-4 py-3.5"
+                    className={`rounded border border-[#E5E5EA] bg-white min-h-12 px-4 py-3.5 ${errors?.education?.[idx]?.endDate ? "border-red-500" : ""}`}
+                    {...register(`education.${idx}.endDate`, { required: true })}
                   />
+                  {errors?.education?.[idx]?.endDate && (
+                    <span className="text-xs text-red-500">End date is required</span>
+                  )}
                 </div>
               </div>
             )}
@@ -132,6 +149,7 @@ export const EducationSection: React.FC<EducationSectionProps> = ({
       </div>
 
       <button
+        type="button"
         onClick={handleAdd}
         className="flex items-center gap-2 text-[15px] font-medium tracking-[-0.24px] mt-5 p-2 rounded"
       >
