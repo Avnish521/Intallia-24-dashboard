@@ -1,5 +1,3 @@
-import { string } from "zod";
-
 export type ValidUser = {
   UserId: string;
   UserGroupId: string;
@@ -49,6 +47,8 @@ export interface User {
   ProfessionalSummary: string;
   ResumeUpload: string;
   Address: string;
+  Education: any;
+  Experience: any;
 }
 
 export interface Payment {

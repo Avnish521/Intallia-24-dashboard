@@ -1,0 +1,38 @@
+{
+    "firstName": "Intallia24",
+    "lastName": "Intallia24",
+    "email": "Intallia24@gmail.com",
+    "number": " 9935377984",
+    "linkedin": "https://www.linkedin.com/in/avnish-nath-t-9129bb276/",
+    "dob": "2025-06-29",
+    "company": "Intallia24",
+    "address": "Intallia24 Indore",
+    "education": [
+        {
+            "degree": "xyz",
+            "college": "abvc",
+            "startDate": "2025-06-25",
+            "endDate": "2025-06-16"
+        },
+        {
+            "degree": "xyz",
+            "college": "abvc",
+            "startDate": "2025-06-25",
+            "endDate": "2025-06-16"
+        }
+    ],
+    "experiences": [
+        {
+            "jobTitle": "fdbfb",
+            "companyName": "dfgdfgd",
+            "startDate": "2025-06-11",
+            "endDate": "2025-06-30"
+        },
+        {
+            "jobTitle": "szdvzd",
+            "companyName": "xfgdgd",
+            "startDate": "2025-06-16",
+            "endDate": "2025-06-30"
+        }
+    ]
+}

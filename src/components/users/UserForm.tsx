@@ -13,10 +13,13 @@ const mapuserDataToForm = (data: User): UserFormValues => ({
   email: data?.Email || "",
   number: data?.ContactNumber || "",
   linkedin: data?.LinkedInURL || "",
-  dob: "",
-  company: "",
+  dob: "", // Default or map from data if available
+  company: "", // Default or map from data if available
   address: data?.Address || "",
+  education: data?.Education || [],
+  experiences: data?.Experience || []
 });
+
 interface UserFormProps {
   userId?: string;
 }
@@ -33,18 +36,8 @@ export const UserForm = forwardRef<FormRef, UserFormProps>(
       formState: { errors },
     } = useForm<UserFormValues>({
       resolver: zodResolver(userSchema),
-      defaultValues: {
-        firstName: "",
-        lastName: "",
-        email: "",
-        number: "",
-        linkedin: "",
-        dob: "",
-        company: "",
-        address: "",
-      },
     });
-
+    
     // Expose submit method with mode to parent
     useImperativeHandle(ref, () => ({
       submit: (mode) => handleSubmit((formData) => onSubmit(formData, mode))(),
@@ -54,7 +47,9 @@ export const UserForm = forwardRef<FormRef, UserFormProps>(
     const addNewUser = (
       formData: UserFormValues,
       mode: "save" | "saveAndExit",
-    ) => {};
+    ) => {
+      console.log("Added New user:", formData);
+    };
 
     // Update New User
     const handleUpdateUser = (
@@ -89,7 +84,7 @@ export const UserForm = forwardRef<FormRef, UserFormProps>(
         noValidate
       >
         <div className="w-full">
-          <section>
+          <div>
             <h2 className="text-xl font-medium tracking-[0.38px] bg-clip-text bg-[linear-gradient(90deg,#0DAFDC_0%,#22E9A2_100%)] text-transparent ">
               Personal Details
             </h2>
@@ -180,6 +175,7 @@ export const UserForm = forwardRef<FormRef, UserFormProps>(
                     <input
                       {...register("number")}
                       type="tel"
+                      placeholder=""
                       className="w-full outline-none placeholder:pl-4 placeholder:text-black"
                     />
                   </div>
@@ -272,10 +268,9 @@ export const UserForm = forwardRef<FormRef, UserFormProps>(
                 </span>
               )}
             </div>
-          </section>
-
-          <EducationSection onAdd={() => console.log("Add education")} />
-          <ExperienceSection onAdd={() => console.log("Add experience")} />
+            <EducationSection register={register} errors={errors} />
+            <ExperienceSection register={register} errors={errors} />
+          </div>
         </div>
       </form>
     );
