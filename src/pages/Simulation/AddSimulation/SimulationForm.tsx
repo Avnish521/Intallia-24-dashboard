@@ -168,9 +168,8 @@ export const SimulationForm = ({simulation}:SimulationFormProps) => {
             label=""
             className="text-[17px] text-[#444446] font-medium text-center tracking-[-0.41px] leading-none pl-4 pr-2 py-2 rounded-[48px] border-solid min-w-[180px]"
             options={[
-              { value: "plane1", label: "Plane 1" },
-              { value: "plane2", label: "Plane 2" },
-              { value: "plane3", label: "Plane 3" },
+              { value: "free", label: "Free" },
+              { value: "paid", label: "Paid" },
             ]}
             placeholder="Select Plane"
             value={watch("plane") || ""}
