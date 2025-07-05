@@ -6,6 +6,7 @@ import { storeUserData } from "@/utils";
 // OTP verification mutation
 export function useOtpVerification() {
   return useMutation({
+    mutationKey: ["otpVerification"],
     mutationFn: async (payload: Record<string, unknown>) => {
       return await otp(payload);
     },
@@ -22,6 +23,7 @@ export function useOtpVerification() {
 // Signup mutation
 export function useSignup() {
   return useMutation({
+    mutationKey: ["signup"],
     mutationFn: async (payload: Record<string, unknown>) => {
       const { UserValid } = await signup(payload);
       if (!UserValid) {
@@ -40,11 +42,15 @@ export function useSignup() {
 // Login mutation
 export function useLogin() {
   return useMutation({
+    mutationKey: ["login"],
     mutationFn: async (payload: Record<string, unknown>) => {
-      return await login(payload);
+      const { UserValid } = await login(payload);
+      storeUserData("userData", UserValid[0]);
+      return UserValid;
     },
     onSuccess: () => {
       toast.success("Login successful.");
+
     },
     onError: (error) => {
       console.error("Login failed:", error);

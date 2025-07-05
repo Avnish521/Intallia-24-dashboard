@@ -1,4 +1,4 @@
-import { forwardRef, useEffect, useImperativeHandle } from "react";
+import { forwardRef, useEffect, useImperativeHandle, useMemo } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { EducationSection } from "./EducationSection";
@@ -6,6 +6,7 @@ import { ExperienceSection } from "./ExperienceSection";
 import { useUserById } from "@/queries/userQueries";
 import { FormRef, User } from "@/types";
 import { UserFormValues, userSchema } from "@/schema/userSchema";
+import { useAuthStore } from "@/store/authStore";
 
 const mapuserDataToForm = (data: User): UserFormValues => ({
   firstName: data?.FirstName || "",
@@ -17,7 +18,7 @@ const mapuserDataToForm = (data: User): UserFormValues => ({
   company: "", // Default or map from data if available
   address: data?.Address || "",
   education: data?.Education || [],
-  experiences: data?.Experience || []
+  experiences: data?.Experience || [],
 });
 
 interface UserFormProps {
@@ -26,8 +27,18 @@ interface UserFormProps {
 
 export const UserForm = forwardRef<FormRef, UserFormProps>(
   ({ userId }, ref) => {
-    const { data: users, isFetched } = useUserById(userId);
-    const userData = users?.UserProfile[0];
+    const { userId: currentUser } = useAuthStore();
+    const { data: userDataa, isFetched } = useUserById(userId);
+
+    const userData = useMemo(() => {
+      if (!userDataa) return undefined;
+      return {
+        ...userDataa.UserProfile[0],
+        DOB: "",
+        Education: userDataa.UserEducation,
+        Experience: userDataa.UserEmployment,
+      };
+    }, [userDataa, isFetched]);
 
     const {
       register,
@@ -37,7 +48,7 @@ export const UserForm = forwardRef<FormRef, UserFormProps>(
     } = useForm<UserFormValues>({
       resolver: zodResolver(userSchema),
     });
-    
+
     // Expose submit method with mode to parent
     useImperativeHandle(ref, () => ({
       submit: (mode) => handleSubmit((formData) => onSubmit(formData, mode))(),
@@ -48,14 +59,79 @@ export const UserForm = forwardRef<FormRef, UserFormProps>(
       formData: UserFormValues,
       mode: "save" | "saveAndExit",
     ) => {
-      console.log("Added New user:", formData);
+      const payload = {
+        JSON: JSON.stringify({
+          Header: [
+            {
+              FirstName: formData.firstName,
+              LastName: formData.lastName,
+              Email: formData.email,
+              ContactNumber: formData.number,
+              LinkedInURL: formData.linkedin,
+              DOB: formData.dob,
+              CompanyId: formData.company,
+              Address: formData.address,
+              Education: formData.education,
+              Experience: formData.experiences,
+              CreateBy: currentUser,
+              CreateDate: new Date().toISOString(),
+              ModifyBy: currentUser,
+              ModifyDate: new Date().toISOString(),
+              ...Array.from({ length: 15 }, (_, i) => ({
+                [`Intallia${i + 1}`]: null,
+              })).reduce((acc, curr) => ({ ...acc, ...curr }), {}),
+            },
+          ],
+          Response: [{ ResponseText: "", ErrorCode: "" }],
+        }),
+      };
+      console.log("Adding new user with payload:", payload);
+      if (mode === "save") {
+        console.log("User saved:", formData);
+      } else if (mode === "saveAndExit") {
+        console.log("User saved and exited:", formData);
+      }
     };
 
     // Update New User
     const handleUpdateUser = (
       formData: UserFormValues,
       mode: "save" | "saveAndExit",
-    ) => {};
+    ) => {
+      const payload = {
+        JSON: JSON.stringify({
+          Header: [
+            {
+              UserId: userId,
+              FirstName: formData.firstName,
+              LastName: formData.lastName,
+              Email: formData.email,
+              ContactNumber: formData.number,
+              LinkedInURL: formData.linkedin,
+              DOB: formData.dob,
+              CompanyId: formData.company,
+              Address: formData.address,
+              Education: formData.education,
+              Experience: formData.experiences,
+              CreateBy: userData.CreateBy,
+              CreateDate: new Date().toISOString(),
+              ModifyBy: currentUser,
+              ModifyDate: new Date().toISOString(),
+              ...Array.from({ length: 15 }, (_, i) => ({
+                [`Intallia${i + 1}`]: null,
+              })).reduce((acc, curr) => ({ ...acc, ...curr }), {}),
+            },
+          ],
+          Response: [{ ResponseText: "", ErrorCode: "" }],
+        }),
+      };
+      console.log("Updating user with payload:", payload);
+      if (mode === "save") {
+        console.log("User updated:", formData);
+      } else if (mode === "saveAndExit") {
+        console.log("User updated and exited:", formData);
+      }
+    };
 
     // Unified submit handler
     const onSubmit = async (

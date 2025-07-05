@@ -99,8 +99,8 @@ export const deleteSection = (payload: Record<string, unknown>) =>
   api.post("/DeleteSection", payload);
 
 // User APIs
-export const getUserProfileById = (payload: Record<string, unknown>) =>
-  api.post("/GetUserProfile", payload);
+export const getUserById = (payload: Record<string, unknown>) =>
+  api.post("/GetUserMaster", payload);
 
 export const addUser = (payload: Record<string, unknown>) =>
   api.post("/AddUserMaster", payload);

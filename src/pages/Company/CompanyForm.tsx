@@ -24,7 +24,7 @@ const defaultValues: CompanyFormValues = {
   numberOfSimulations: "",
 };
 
-const mapCompanyDataToForm = (data): CompanyFormValues => ({
+const mapCompanyDataToForm = (data: any): CompanyFormValues => ({
   companyId: data?.CompanyId || "",
   companyName: data?.CompanyName || "",
   contactPersonName: data?.ContactPersonName || "",

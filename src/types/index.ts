@@ -36,16 +36,36 @@ export interface Roles {
   CompanyId: string;
   Description: string;
 }
+interface IEducation {
+  EducationId?: string;
+  UserId?: string;
+  Degree: string;
+  Description: string;
+  StartDate: Date;
+  EndDate: Date;
+}
+
+interface IExperience {
+  ExperienceId?: string;
+  UserId?: string;
+  JobTitle: string;
+  CompanyName: string;
+  StartDate: Date;
+  EndDate: Date;
+  Description: string;
+}
 
 export interface User {
-  UserId: string;
+  UserId?: string;
   FirstName: string;
   LastName: string;
   Email: string;
   ContactNumber: string;
   LinkedInURL: string;
-  ProfessionalSummary: string;
-  ResumeUpload: string;
+  ProfessionalSummary?: string;
+  ResumeUpload?: string;
+  CompanyId?: string;
+  DOB?: string;
   Address: string;
   Education: any;
   Experience: any;

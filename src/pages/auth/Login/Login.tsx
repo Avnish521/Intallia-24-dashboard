@@ -1,11 +1,10 @@
-import myImage from '@/assets/Frame 25.svg';
+import myImage from "@/assets/Frame 25.svg";
 import SignupImg from "@/assets/Hired-bro 1.svg";
-import { useState } from 'react';
-import LoginForm from './LoginForm';
-import { useNavigate } from 'react-router-dom';
+import LoginForm from "./LoginForm";
+import { useNavigate } from "react-router-dom";
 
 const Login = () => {
-  const navigator = useNavigate();
+  const navigate = useNavigate();
 
   return (
     <div className="h-screen">
@@ -15,10 +14,16 @@ const Login = () => {
             <img src={myImage} alt="Example" />
           </div>
           <div className="flex gap-2 items-center">
-            <button className="rounded-lg bg-[#242426] py-2 px-3 text-[#FFFFFF] leading-[21px]" onClick={() => navigator('/login')}>
+            <button
+              className="rounded-lg bg-[#242426] py-2 px-3 text-[#FFFFFF] leading-[21px]"
+              onClick={() => navigate("/login")}
+            >
               Login
             </button>
-            <button className="ring-1 rounded-lg py-1 px-3 ring-[#242426]" onClick={() => navigator('/signup')}>
+            <button
+              className="ring-1 rounded-lg py-1 px-3 ring-[#242426]"
+              onClick={() => navigate("/signup")}
+            >
               Singup
             </button>
           </div>
@@ -31,10 +36,10 @@ const Login = () => {
             Explore. Practice. Get Hired!
           </h2>
         </div>
-      <LoginForm />
+        <LoginForm />
       </div>
     </div>
   );
-}
+};
 
 export default Login;

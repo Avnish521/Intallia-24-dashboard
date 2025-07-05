@@ -1,4 +1,4 @@
-// Create a function to get the initial task counts
+// Initial task counts as an object
 export const initialTaskCounts = {
   "MS Excel": 0,
   "MS Word": 0,

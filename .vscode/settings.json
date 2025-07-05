@@ -32,7 +32,9 @@
 	"prettier.enable": true,
 	"editor.fontLigatures": true,
 	"editor.fontSize": 14,
-	"editor.lineHeight": 25,
+	"editor.lineHeight":2,
+	"editor.wordWrap": "on",
+	"editor.fontWeight": "500",
 	"editor.tabSize": 2,
 	"editor.minimap.enabled": false,
 	"editor.suggestSelection": "first",
@@ -45,4 +47,16 @@
 	"[typescriptreact]": {
 		"editor.defaultFormatter": "esbenp.prettier-vscode"
 	},
+
+	"github.copilot.enable": true,
+	"github.copilot.inlineSuggest.enable": true,
+	"github.copilot.suggestionDelayMs": 100,
+	"github.copilot.advanced": {
+		"inlineSuggestCount": 3,
+		"panel.enabled": true
+	},
+	"github.copilot.editor.enableAutoCompletions": true,
+	"github.copilot.editor.enableAutoCompletionsForAllLanguages": true,
+	"github.copilot.chat.agent.thinkingTool": true,
+	"github.copilot.chat.codeGeneration.useInstructionFiles": true
 }

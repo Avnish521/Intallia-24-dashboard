@@ -1,0 +1,62 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Lint code
+        run: npm run lint
+
+      - name: Run unit & integration tests
+        run: npm test
+
+      - name: Build project
+        run: npm run build
+
+      - name: Upload production build
+        uses: actions/upload-artifact@v4
+        with:
+          name: production-build
+          path: dist
+
+      - name: Semantic Release (version, tag, changelog, GitHub release)
+        if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }} # Only needed if publishing to npm
+        run: npx semantic-release
+
+      - name: Deploy to production
+        if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
+        run: |
+          echo "Deploying to production server..."
+          # Example: SSH into server and run deployment script
+          # ssh user@yourserver "cd /path/to/app && git pull && npm install && npm run build"
+          echo "Deployment completed successfully!"
+
+      - name: Notify deployment success
+        if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
+        run: |
+          echo "Deployment to production was successful!"
+          # Example: Send notification to Slack
+          # curl -X POST -H 'Content-type: application/json' --data '{"text":"Deployment successful!"}' $SLACK_WEBHOOK_URL
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}

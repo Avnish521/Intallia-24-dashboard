@@ -2,6 +2,7 @@ import { create } from "zustand";
 import { login as apiLogin } from "@/http/api";
 import { storeUserData, clearAuthStorage, getUserData } from "@/utils";
 import { STORAGE_KEY } from "@/constants";
+import { devtools } from "zustand/middleware";
 
 const initialUserData = getUserData(STORAGE_KEY);
 
@@ -26,37 +27,39 @@ const getInitialState = (): AuthState => ({
   isValid: initialUserData?.IsValid === "true",
 });
 
-export const useAuthStore = create<AuthState & AuthActions>((set) => ({
-  ...getInitialState(),
+export const useAuthStore = create<AuthState & AuthActions>()(
+  devtools((set) => ({
+    ...getInitialState(),
 
-  login: async (userId, password) => {
-    try {
-      const payload = { LoginId: userId, Password: password, isValid: "" };
-      const response = await apiLogin(payload);
-      const user = response?.UserValid?.[0];
+    login: async (userId, password) => {
+      try {
+        const payload = { LoginId: userId, Password: password, isValid: "" };
+        const response = await apiLogin(payload);
+        const user = response?.UserValid?.[0];
 
-      if (user) {
-        storeUserData(STORAGE_KEY, user);
-        set({
-          token: user.Token ?? null,
-          userId: user.UserId ?? null,
-          userGroupId: user.UserGroupId ?? null,
-          companyId: user.CompanyId ?? null,
-          isValid: user.IsValid === "true",
-        });
-      } else {
+        if (user) {
+          storeUserData(STORAGE_KEY, user);
+          set({
+            token: user.Token ?? null,
+            userId: user.UserId ?? null,
+            userGroupId: user.UserGroupId ?? null,
+            companyId: user.CompanyId ?? null,
+            isValid: user.IsValid === "true",
+          });
+        } else {
+          clearAuthStorage(STORAGE_KEY);
+          set(getInitialState());
+        }
+      } catch (error) {
+        console.error("Login failed", error);
         clearAuthStorage(STORAGE_KEY);
         set(getInitialState());
       }
-    } catch (error) {
-      console.error("Login failed", error);
+    },
+
+    logout: () => {
       clearAuthStorage(STORAGE_KEY);
       set(getInitialState());
-    }
-  },
-
-  logout: () => {
-    clearAuthStorage(STORAGE_KEY);
-    set(getInitialState());
-  },
-}));
+    },
+  }))
+);

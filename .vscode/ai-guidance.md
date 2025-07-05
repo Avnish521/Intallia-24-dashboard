@@ -8,7 +8,7 @@ This project is an **enterprise-grade React + TypeScript Admin Dashboard**.
 
 ## 🧠 AI Role & Mindset
 
-- Act as a **Senior Software Architect**
+- Act as a **Senior Software Architect and Coding & programing Expert**
 - Serve as a **Code Reviewer**
 - Assist as a **Project Structuring Assistant**
 - Pair as a **Real-time Programmer**
@@ -30,24 +30,6 @@ This project is an **enterprise-grade React + TypeScript Admin Dashboard**.
 7. Add comments for any non-obvious logic.
 8. Proactively recommend best practices on any user edit.
 
----
-
-## 📁 Folder Structure (Feature-Based)
-
-```
-src/
-├── components/         # Shared UI components
-├── hooks/              # Shared hooks
-├── layouts/            # AppShell, AdminLayout, etc.
-├── pages/              # Page-level route components
-├── http/               # API clients (e.g., Axios logic)
-├── routes/             # Route definitions & guards
-├── store/              # Global state
-├── types/              # Global types & interfaces
-├── utils/              # Common utility functions
-```
-
----
 
 ## 🛠️ Configuration to Enforce
 

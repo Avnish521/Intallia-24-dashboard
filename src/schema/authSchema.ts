@@ -1,6 +1,10 @@
 import { z } from "zod";
 
-// Signup and OTP validation schemas using Zod
+export const loginSchema = z.object({
+  userid: z.string().min(1, "User Id is required"),
+  password: z.string().min(1, "Password is required"),
+});
+
 export const signupSchema = z
   .object({
     firstName: z.string().min(1, "First Name is required"),
@@ -19,7 +23,6 @@ export const signupSchema = z
     path: ["confirmPassword"],
   });
 
-// OTP validation schema
 export const otpSchema = z.object({
   otp: z
     .string()
@@ -29,3 +32,4 @@ export const otpSchema = z.object({
 
 export type SignupFormValues = z.infer<typeof signupSchema>;
 export type OtpFormValues = z.infer<typeof otpSchema>;
+export type LoginFormValues = z.infer<typeof loginSchema>;

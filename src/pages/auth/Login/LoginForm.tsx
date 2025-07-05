@@ -6,15 +6,8 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { useAuthStore } from "@/store/authStore";
 import { useNavigate } from "react-router-dom";
+import { loginSchema, LoginFormValues } from "@/schema/authSchema";
 
-
-// Schema
-const loginSchema = z.object({
-  userid: z.string().min(1, "User Id is required"),
-  password: z.string().min(1, "Password is required"),
-});
-
-type LoginFormValues = z.infer<typeof loginSchema>;
 
 const LoginForm = () => {
   const login = useAuthStore((state) => state.login);
@@ -39,7 +32,6 @@ const LoginForm = () => {
     console.error("Login failed:", err);
   }
 };
-
 
   return (
     <div className="w-full md:w-1/2 flex justify-center bg-[#FFFFFF] py-[3%] h-[89vh] overflow-y-scroll">

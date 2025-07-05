@@ -1,9 +1,4 @@
-import {
-  getScreen,
-  deleteUser,
-  getUserProfileById,
-  addUser,
-} from "@/http/api.js";
+import { getScreen, deleteUser, getUserById, addUser } from "@/http/api.js";
 import {
   useMutation,
   useQuery,
@@ -69,13 +64,15 @@ export function useDeleteUser() {
 /**
  * Custom hook to fetch a single user by ID.
  */
-export function useUserById(userId?: string | number) : UseQueryResult<any, any> {
+export function useUserById(
+  userId?: string | number,
+): UseQueryResult<any, any> {
   return useQuery({
     queryKey: ["user", userId],
     queryFn: () =>
-      getUserProfileById({
+      getUserById({
         JSON: JSON.stringify({
-          UserProfile: [{ UserId: userId }],
+          Header: [{ UserId: userId }],
           Response: [{ ResponseText: "", ErrorCode: "" }],
         }),
       }),

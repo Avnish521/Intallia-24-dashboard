@@ -1,5 +1,15 @@
 import { z } from "zod";
 
+export const sectionSchema = z.object({
+  software: z.string().min(1, "Software is required"),
+  studentFile: z.string().min(1, "Student File is required"),
+  jsonFile: z.string().min(1, "JSON File is required"),
+});
+export const taskSchema = z.object({
+  
+});
+
+// Define the schema for a simulation
 const simulationSchema = z.object({
   plane: z.string().min(1, "Plane is required"),
   simulationName: z.string().min(1, "Simulation Name is required"),

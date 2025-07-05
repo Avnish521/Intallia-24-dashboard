@@ -23,7 +23,8 @@ export const SimulationForm = ({simulation}:SimulationFormProps) => {
   const [simulationType, setSimulationType] = useState<"guided" | "unguided">(
     "unguided",
   );
-  const { userID, companyId } = useAuthStore((state) => state);
+  const { userId: userID, companyId } = useAuthStore((state) => state);
+  console.log("SimulationForm", userID);
   const addJobSimulation = useAddJobSimulation();
 
   const {

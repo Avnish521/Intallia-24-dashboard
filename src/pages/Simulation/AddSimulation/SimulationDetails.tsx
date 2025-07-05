@@ -28,10 +28,12 @@ export const SimulationDetails = () => {
 
   const softwareOptions = useMemo(() => {
     if (isSuccess && Array.isArray(Software?.LookupData)) {
-      return Software.LookupData.map((item) => ({
-        value: item.SoftwareId,
-        label: item.Name,
-      }));
+      return Software.LookupData.map(
+        (item: { SoftwareId: string; Name: string }): { value: string; label: string } => ({
+          value: item.SoftwareId,
+          label: item.Name,
+        })
+      );
     }
     return [];
   }, [isSuccess, Software]);

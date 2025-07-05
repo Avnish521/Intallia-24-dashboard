@@ -1,5 +1,3 @@
-import { SimulationGrid } from "@/pages/Simulation/SimulationGrid/SimulationGrid";
-import { Simulation } from "@/types";
 import {
   getScreen,
   addSection,
@@ -43,6 +41,7 @@ export function useAddJobSimulation(): UseMutationResult<
   { JSON: string }
 > {
   return useMutation({
+    mutationKey: ["addJobSimulation"],
     mutationFn: async (payload: { JSON: string }) => {
       return await addJobSimulation(payload);
     },
@@ -59,19 +58,19 @@ export function useAddJobSimulation(): UseMutationResult<
 
 // get Simulation data by SimulationId
 export function useSimulationData(
-  SimulationId: string,
-  SoftwareId: string,
+  SimulationId: string | number,
+  CompanyId: string,
 ): UseQueryResult<ApiResponse, unknown> {
   return useQuery({
     queryKey: ["JobSimulations", SimulationId],
     queryFn: () =>
       getJobSimulationById({
         JSON: JSON.stringify({
-          Header: [{ SimulationId, SoftwareId }],
+          Header: [{ SimulationId, CompanyId }],
           Response: [{ ResponseText: "", ErrorCode: "" }],
         }),
       }),
-    enabled: !!(SimulationId && SoftwareId),
+    enabled: !!(SimulationId && CompanyId),
     retry: 2,
   });
 }
@@ -83,6 +82,7 @@ export function useAddSection(): UseMutationResult<
   { JSON: string }
 > {
   return useMutation({
+    mutationKey: ["addSection"],
     mutationFn: async (payload: { JSON: string }) => {
       const result = await addSection(payload);
       return result;
@@ -121,6 +121,7 @@ export function useDeleteSoftware() {
   const navigate = useNavigate();
 
   return useMutation({
+    mutationKey: ["deleteSoftware"],
     mutationFn: async (SoftwareId: string | number) => {
       const payload = {
         JSON: JSON.stringify({
@@ -131,7 +132,7 @@ export function useDeleteSoftware() {
       return deleteSoftware(payload);
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["companies"] });
+      queryClient.invalidateQueries({ queryKey: ["Software"] });
       navigate("/software");
       toast.success("Software deleted successfully.");
     },
