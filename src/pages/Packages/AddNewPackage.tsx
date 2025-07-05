@@ -1,10 +1,11 @@
-import React, { useEffect } from "react";
+import React, { useState } from "react";
 import SidebarActions from "@/components/users/SidebarActions";
 import { MainLayout } from "@/layout/MainLayout";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useParams } from "react-router-dom";
+import MultiSelect from "@/components/common/MultiSelect";
 
 const packageSchema = z.object({
   packageName: z.string().min(1, "Package Name is required"),
@@ -15,6 +16,7 @@ const packageSchema = z.object({
   modifiedOn: z.string().min(1, "Modified On is required"),
   modifiedBy: z.string().min(1, "Modified By is required"),
   createdBy: z.string().min(1, "Created By is required"),
+  simulation: z.array(z.string()).optional(),
 });
 
 type PackageFormValues = z.infer<typeof packageSchema>;
@@ -28,6 +30,7 @@ const defaultValues: PackageFormValues = {
   modifiedOn: "",
   modifiedBy: "",
   createdBy: "",
+  simulation: [],
 };
 
 const AddNewPackage: React.FC<{
@@ -35,11 +38,26 @@ const AddNewPackage: React.FC<{
 }> = ({ editData }) => {
   const { id: packageId } = useParams();
 
+  const [simulationSelection, setSimulationSelection] = useState<string[]>([]);
+  console.log("simulationSelection", simulationSelection);
+  const simulationOptions = [
+    { label: "Simulation 1", value: "simulation1" },
+    { label: "Simulation 2", value: "simulation2" },
+    { label: "Simulation 3", value: "simulation3" },
+    { label: "Simulation 4", value: "simulation4" },
+    { label: "Simulation 5", value: "simulation5" },
+    { label: "Simulation 6", value: "simulation6" },
+    { label: "Simulation 7", value: "simulation7" },
+    { label: "Simulation 8", value: "simulation8" },
+    { label: "Simulation 9", value: "simulation9" },
+    { label: "Simulation 10", value: "simulation10" },
+  ];
+
   const {
     register,
     handleSubmit,
     reset,
-    formState: { errors, isSubmitting },
+    formState: { errors },
   } = useForm<PackageFormValues>({
     resolver: zodResolver(packageSchema),
     defaultValues: editData || defaultValues,
@@ -47,11 +65,11 @@ const AddNewPackage: React.FC<{
 
   //use react query hook to fetch package data if editData is not provided
 
-  const handleAddNewPackage = async (data: PackageFormValues) => {
+  const handleAddNewPackage = async (formData: PackageFormValues) => {
     try {
       if (editData) {
         // await updatePackage({ ...editData, ...data });
-        alert("Package updated successfully!");
+        console.log("FormData", formData);
       } else {
         // await createPackage(data);
         alert("Package created successfully!");
@@ -106,19 +124,19 @@ const AddNewPackage: React.FC<{
           <div className="shadow-[0px_3.5px_5.5px_0px_rgba(0,0,0,0.02)] bg-white flex items-stretch gap-5 flex-wrap justify-between mt-[30px] px-[45px] py-[31px] rounded-[15px]  h-[88vh] sticky top-0 overflow-y-scroll">
             <div className="flex font-plusJakarta  flex-col gap-5 overflow-y-auto">
               <div className="w-full">
-                <form noValidate>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mt-5">
-                    <div className="flex flex-col gap-2">
-                      <label className="flex items-center gap-1">
-                        <span className="text-[15px] text-[#444446] leading-5 ">
-                          Package Name
-                        </span>
+                <form noValidate className="flex flex-col gap-8">
+                  {/* Package Details Row */}
+                  <div className="flex flex-col md:flex-row md:flex-wrap gap-5">
+                    <div className="flex-1 min-w-[220px] flex flex-col gap-1">
+                      <label className="flex items-center gap-1 font-medium text-[#444446] text-[15px]">
+                        Package Name{" "}
                         <span className="text-[#FF3A3A] text-sm">*</span>
                       </label>
                       <input
                         type="text"
                         {...register("packageName")}
-                        className="rounded border border-[#E5E5EA] bg-white min-h-12 px-4 py-3.5"
+                        className="rounded border border-[#E5E5EA] bg-white min-h-12 px-4 py-3.5 focus:outline-none focus:ring-2 focus:ring-primary transition"
+                        placeholder="Enter package name"
                       />
                       {errors.packageName && (
                         <span className="text-xs text-red-500">
@@ -126,17 +144,15 @@ const AddNewPackage: React.FC<{
                         </span>
                       )}
                     </div>
-                    <div className="flex flex-col gap-2">
-                      <label className="flex items-center gap-1">
-                        <span className="text-[15px] text-[#444446] tracking-[-0.24px]">
-                          Amount
-                        </span>
-                        <span className="text-[#FF3A3A] text-sm">*</span>
+                    <div className="flex-1 min-w-[220px] flex flex-col gap-1">
+                      <label className="flex items-center gap-1 font-medium text-[#444446] text-[15px]">
+                        Amount <span className="text-[#FF3A3A] text-sm">*</span>
                       </label>
                       <input
                         type="text"
                         {...register("amount")}
-                        className="rounded border border-[#E5E5EA] bg-white min-h-12 px-4 py-3.5"
+                        className="rounded border border-[#E5E5EA] bg-white min-h-12 px-4 py-3.5 focus:outline-none focus:ring-2 focus:ring-primary transition"
+                        placeholder="Enter amount"
                       />
                       {errors.amount && (
                         <span className="text-xs text-red-500">
@@ -145,18 +161,19 @@ const AddNewPackage: React.FC<{
                       )}
                     </div>
                   </div>
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-5 mt-5">
-                    <div className="flex flex-col gap-2">
-                      <label className="flex items-center gap-1">
-                        <span className="text-[15px] text-[#444446] tracking-[-0.24px]">
-                          Validity(In Year)
-                        </span>
+
+                  {/* Counts Row */}
+                  <div className="flex flex-col md:flex-row md:flex-wrap gap-5">
+                    <div className="flex-1 min-w-[220px] flex flex-col gap-1">
+                      <label className="flex items-center gap-1 font-medium text-[#444446] text-[15px]">
+                        Validity (In Year){" "}
                         <span className="text-[#FF3A3A] text-sm">*</span>
                       </label>
                       <input
                         type="text"
                         {...register("validity")}
-                        className="rounded border border-[#E5E5EA] bg-white min-h-12 px-4 py-3.5"
+                        className="rounded border border-[#E5E5EA] bg-white min-h-12 px-4 py-3.5 focus:outline-none focus:ring-2 focus:ring-primary transition"
+                        placeholder="e.g. 1, 2, 3"
                       />
                       {errors.validity && (
                         <span className="text-xs text-red-500">
@@ -164,17 +181,16 @@ const AddNewPackage: React.FC<{
                         </span>
                       )}
                     </div>
-                    <div className="flex flex-col gap-2">
-                      <label className="flex items-center gap-1">
-                        <span className="text-[15px] text-[#444446] tracking-[-0.24px]">
-                          No. of Case Study
-                        </span>
+                    <div className="flex-1 min-w-[220px] flex flex-col gap-1">
+                      <label className="flex items-center gap-1 font-medium text-[#444446] text-[15px]">
+                        No. of Case Study{" "}
                         <span className="text-[#FF3A3A] text-sm">*</span>
                       </label>
                       <input
                         type="text"
                         {...register("caseStudyCount")}
-                        className="rounded border border-[#E5E5EA] bg-white min-h-12 px-4 py-3.5"
+                        className="rounded border border-[#E5E5EA] bg-white min-h-12 px-4 py-3.5 focus:outline-none focus:ring-2 focus:ring-primary transition"
+                        placeholder="e.g. 5"
                       />
                       {errors.caseStudyCount && (
                         <span className="text-xs text-red-500">
@@ -182,17 +198,16 @@ const AddNewPackage: React.FC<{
                         </span>
                       )}
                     </div>
-                    <div className="flex flex-col gap-2">
-                      <label className="flex items-center gap-1">
-                        <span className="text-[15px] text-[#444446] tracking-[-0.24px]">
-                          No. of Users
-                        </span>
+                    <div className="flex-1 min-w-[220px] flex flex-col gap-1">
+                      <label className="flex items-center gap-1 font-medium text-[#444446] text-[15px]">
+                        No. of Users{" "}
                         <span className="text-[#FF3A3A] text-sm">*</span>
                       </label>
                       <input
                         type="text"
                         {...register("userCount")}
-                        className="rounded border border-[#E5E5EA] bg-white min-h-12 px-4 py-3.5"
+                        className="rounded border border-[#E5E5EA] bg-white min-h-12 px-4 py-3.5 focus:outline-none focus:ring-2 focus:ring-primary transition"
+                        placeholder="e.g. 100"
                       />
                       {errors.userCount && (
                         <span className="text-xs text-red-500">
@@ -200,18 +215,20 @@ const AddNewPackage: React.FC<{
                         </span>
                       )}
                     </div>
-                    <div className="flex flex-col gap-2">
-                      <label className="flex items-center gap-1">
-                        <span className="text-[15px] text-[#444446] tracking-[-0.24px]">
-                          Modified On
-                        </span>
+                  </div>
+
+                  {/* Meta Row */}
+                  <div className="flex flex-col md:flex-row md:flex-wrap gap-5">
+                    <div className="flex-1 min-w-[220px] flex flex-col gap-1">
+                      <label className="flex items-center gap-1 font-medium text-[#444446] text-[15px]">
+                        Modified On{" "}
                         <span className="text-[#FF3A3A] text-sm">*</span>
                       </label>
                       <input
                         type="text"
                         {...register("modifiedOn")}
                         placeholder="DD/MM/YYYY"
-                        className="rounded border border-[#E5E5EA] bg-[#F2F2F7] min-h-12 px-4 py-3.5"
+                        className="rounded border border-[#E5E5EA] bg-[#F2F2F7] min-h-12 px-4 py-3.5 focus:outline-none focus:ring-2 focus:ring-primary transition"
                       />
                       {errors.modifiedOn && (
                         <span className="text-xs text-red-500">
@@ -219,18 +236,16 @@ const AddNewPackage: React.FC<{
                         </span>
                       )}
                     </div>
-                    <div className="flex flex-col gap-2">
-                      <label className="flex items-center gap-1">
-                        <span className="text-[15px] text-[#444446] tracking-[-0.24px]">
-                          Modified By
-                        </span>
+                    <div className="flex-1 min-w-[220px] flex flex-col gap-1">
+                      <label className="flex items-center gap-1 font-medium text-[#444446] text-[15px]">
+                        Modified By{" "}
                         <span className="text-[#FF3A3A] text-sm">*</span>
                       </label>
                       <input
                         type="text"
                         {...register("modifiedBy")}
                         placeholder="Admin Name"
-                        className="rounded border border-[#E5E5EA] min-h-12 px-4 py-3.5  bg-[#F2F2F7]"
+                        className="rounded border border-[#E5E5EA] min-h-12 px-4 py-3.5 bg-[#F2F2F7] focus:outline-none focus:ring-2 focus:ring-primary transition"
                       />
                       {errors.modifiedBy && (
                         <span className="text-xs text-red-500">
@@ -238,17 +253,15 @@ const AddNewPackage: React.FC<{
                         </span>
                       )}
                     </div>
-                    <div className="flex flex-col gap-2">
-                      <label className="flex items-center gap-1">
-                        <span className="text-[15px] text-[#444446] tracking-[-0.24px]">
-                          Created By
-                        </span>
+                    <div className="flex-1 min-w-[220px] flex flex-col gap-1">
+                      <label className="flex items-center gap-1 font-medium text-[#444446] text-[15px]">
+                        Created By{" "}
                         <span className="text-[#FF3A3A] text-sm">*</span>
                       </label>
                       <input
                         type="text"
                         {...register("createdBy")}
-                        className="rounded border border-[#E5E5EA] bg-[#F2F2F7] min-h-12 px-4 py-3.5"
+                        className="rounded border border-[#E5E5EA] bg-[#F2F2F7] min-h-12 px-4 py-3.5 focus:outline-none focus:ring-2 focus:ring-primary transition"
                         placeholder="Admin Name"
                       />
                       {errors.createdBy && (
@@ -257,6 +270,22 @@ const AddNewPackage: React.FC<{
                         </span>
                       )}
                     </div>
+                  </div>
+
+                  {/* Simulation Row */}
+                  <div className="flex flex-col gap-2 mt-5 w-full lg:max-w-[690px]">
+                    <label className="flex items-center gap-1 font-medium text-[#444446] text-[15px]">
+                      Simulation{" "}
+                      <span className="text-[#FF3A3A] text-sm">*</span>
+                    </label>
+                    <MultiSelect
+                      options={simulationOptions}
+                      value={simulationSelection}
+                      onChange={setSimulationSelection}
+                      placeholder="Select Simulation"
+                      disabled={false}
+                      className="rounded border border-[#E5E5EA] bg-white min-h-12 px-4 py-3.5 focus:outline-none focus:ring-2 focus:ring-primary transition"
+                    />
                   </div>
                 </form>
               </div>

@@ -5,6 +5,7 @@ import { MainLayout } from "@/layout/MainLayout";
 import { UserTable } from "@/components/users/UserTable";
 import { UserTableActions } from "@/components/users/UserTableActions";
 import { users } from "@/data/users";
+import { PATH } from "@/constants";
 
 const Packages: React.FC = () => {
   const navigate = useNavigate();
@@ -32,7 +33,7 @@ const Packages: React.FC = () => {
             <UserTableActions
               onSearch={setSearchQuery}
               buttonLabel="Add New Package"
-              buttonLink={() => navigate("/packages/add-new-package")}
+              buttonLink={() => navigate(PATH.PACKAGES_ADD)}
             />
 
             <div className="bg-white p-6 rounded-lg shadow">

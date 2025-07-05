@@ -23,8 +23,14 @@ export const PATH = {
   SIMULATION: "/admin/simulation",
   SIMULATION_ADD: "/admin/simulation/new-simulation",
   SIMULATION_EDIT: "/admin/simulation/edit/:id",
+
+  // Packages
+  PACKAGES: "/admin/packages",
+  PACKAGES_ADD: "/admin/packages/add-new-package",
 };
+
 export const STORAGE_KEY = "userData";
+
 export const BASE_TEXT = {
   ADD_NEW_SIMULATION: "Add New Simulation",
   ADD_NEW_COMPANY: "Add New Company",
