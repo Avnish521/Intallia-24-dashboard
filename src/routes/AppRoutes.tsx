@@ -31,7 +31,7 @@ const Packages = lazy(() => import("@/pages/Packages/Packages"));
 const AddNewPackage = lazy(() => import("@/pages/Packages/AddNewPackage"));
 const ViewPackage = lazy(() => import("@/pages/Packages/ViewPackage"));
 const DataScience = lazy(() => import("@/pages/Packages/DataScience"));
-const Plans = lazy(() => import("@/pages/Packages/plans"));
+//
 
 const Invitations = lazy(() => import("@/components/Invitations/Invitations"));
 const Payments = lazy(() => import("@/pages/Payments/Payments"));
@@ -136,7 +136,7 @@ const router = createBrowserRouter([
         children: [
           { index: true, element: <Simulation /> },
           { path: "new-simulation", element: <AddSimulation /> },
-          { path: ":simulationId", element: <AddSimulation /> },
+          // { path: ":simulationId", element: <AddSimulation />const Plans = lazy(() => import("@/pages/Packages/plans")); },
         ],
       },
 
@@ -163,7 +163,7 @@ const router = createBrowserRouter([
       },
 
       { path: "datascience", element: <DataScience /> },
-      { path: "plan", element: <Plans /> },
+      // { path: "plan", element: <Plans /> },
       { path: "user-assignment", element: <UserAssignment /> },
       { path: "payments", element: <Payments /> },
       { path: "skill-matrix", element: <SkillMatrix /> },
